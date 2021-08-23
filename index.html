@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Zanshin Exchange</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+        body {
+            background: url(images/background-image-2-3.png) top right no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            /*align-items: center;*/
+            padding-top: 19px;
+        }
+
+        #header {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 13%;
+            align-self: stretch;
+            margin-bottom: 50px;
+        }
+
+        #content {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+
+        #cryptocurrency-pairs-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2%;
+            margin-left: 13%;
+            width: 16%;
+
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        #current-cryptocurrency-pair {
+            margin: 0 0 30px 0;
+            width: 80%;
+            text-align: center;
+            /*45 - border width*/
+            line-height: 38px;
+            font-family: "Open Sans";
+            font-weight: bold;
+            font-size: 22px;
+            color: #FFFFFF;
+            border-bottom: 2px solid rgba(255, 255, 255, .5);
+        }
+
+        #search-input-wrapper {
+            display: flex;
+            width: 100%;
+            flex-direction: row;
+            height: 40px;
+            border: 1.5px solid transparent;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            background: #FFFFFF;
+        }
+
+        #search-input-wrapper:hover {
+            border: 1.5px solid #A8BAF6;
+        }
+
+        #search-icon {
+            font-size: 28px;
+            padding: 0 10px;
+            color: #4C5C97;
+            line-height: 40px;
+            vertical-align: middle;
+        }
+
+        #search-input{
+            width: 100%;
+            font-family: "Open Sans";
+            border: none;
+            background: transparent;
+            font-size: 18px;
+        }
+
+        #search-input:focus {
+            outline: none;
+        }
+
+        #list {
+            width: 100%;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            height: 17em;
+            overflow: auto;
+        }
+
+        #list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #list::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, .5);
+        }
+
+        #list li {
+            display: block;
+            padding: 15px;
+            text-decoration: none;
+            font-family: "Open Sans";
+            font-size: 18px;
+            color: #FFFFFF;
+        }
+
+        #list li:hover {
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, .2);
+        }
+
+        #wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 2%;
+            /*left: 35% - cryptocurrency-pairs-wrapper width and margin*/
+            margin-left: 2%;
+            width: 26%;
+
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        .toggle-button {
+            position: relative;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            margin-bottom: 30px;
+        }
+
+        .toggle-button input {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            border-radius: 30px;
+            outline: none;
+            appearance: none;
+            font-family: "Open Sans";
+            font-size: 18px;
+            color: #FFFFFF;
+        }
+
+        .toggle-button input:before,
+        .toggle-button input:after {
+            z-index: 2;
+            position: absolute;
+            text-align: center;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .toggle-button input:before {
+            content: "Купить";
+            width: 50%;
+            left: 0;
+        }
+
+        .toggle-button input:after {
+            content: "Продать";
+            width: 50%;
+            right: 0;
+        }
+
+        .toggle-button label {
+            z-index: 1;
+            position: absolute;
+            /*width: 50%;*/
+            top: 0;
+            bottom: 0;
+            border-radius: 30px;
+        }
+
+        .toggle-button.buy-btn input:checked + label {
+            right: 0;
+            left: 50%;
+            background: #4C5C97;
+            transition: left 0.4s 0.2s, right 0.5s;
+        }
+
+        .toggle-button.buy-btn input:not(:checked) + label {
+            left: 0;
+            right: 50%;
+            background: #4C5C97;
+            transition: left 0.5s, right 0.4s 0.2s;
+        }
+
+        #available-amount {
+            text-align: right;
+            margin: 10px 0;
+            font-family: "Open Sans";
+            font-size: 18px;
+            color: #FFFFFF;
+        }
+
+        .field-wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            font-family: "Open Sans";
+            font-size: 18px;
+            background: #FFFFFF;
+            border: 1.5px solid transparent;
+            border-radius: 15px;
+        }
+
+        #price-input-wrapper:hover, #amount-input-wrapper:hover {
+            border: 1.5px solid #A8BAF6;
+        }
+
+        .field-name {
+            color: #4C5C97;
+            opacity: 60%;
+            width: 30%;
+        }
+
+        .cryptocurrency-name {
+            width: 15%;
+            color: #4C5C97;
+            text-align: right;
+        }
+
+        .input {
+            width: 40%;
+            position: static;
+            font-family: "Open Sans";
+            font-size: 18px;
+            text-align: right;
+            color: #4C5C97;
+            background: transparent;
+            border: none;
+        }
+
+        .input:focus {
+            outline: none;
+        }
+
+        /* webkit input*/
+        ::-webkit-input-placeholder { text-align:right; color: #4C5C97; opacity: 60%;}
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+        /* mozilla input */
+        input:-moz-placeholder { text-align:right; }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        #total-price {
+            width: 45%;
+            color: #4C5C97;
+            text-align: right;
+        }
+
+        #horizontal-line {
+            border-bottom: 2px solid #FFFFFF;
+            width: 80%;
+            align-self: center;
+            margin-bottom: 15px;
+            opacity: 50%;
+        }
+
+        #btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: static;
+            align-self: stretch;
+
+            flex: none;
+            order: 2;
+            flex-grow: 0;
+            margin-top: 20px;
+        }
+
+        #btn {
+            position: static;
+            height: 60px;
+            border:  none;
+
+            background: #4C5C97;
+            border-radius: 15px;
+
+            /* Inside Auto Layout */
+            flex: none;
+            order: 0;
+            flex-grow: 0;
+            transition: background .3s;
+        }
+
+        #btn:hover {
+            background: #A8BAF6;
+            transition: background .3s;
+        }
+
+        #btn-text {
+            margin: 0px;
+            position: static;
+            font-family: Open Sans;
+            font-size: 18px;
+            line-height: 20px;
+            color: #FFFFFF;
+        }
+
+        #loader {
+            margin-left: auto;
+            margin-right: auto;
+            display: none;
+            border: 3px solid #FFFFFF;
+            border-radius: 50%;
+            border-top: 3px solid transparent;
+            width: 12px;
+            height: 12px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .animate-bottom {
+            position: relative;
+            -webkit-animation-name: animatebottom;
+            -webkit-animation-duration: 1s;
+            animation-name: animatebottom;
+            animation-duration: 1s
+        }
+
+        @-webkit-keyframes animatebottom {
+            from { bottom:-100px; opacity:0 }
+            to { bottom:0px; opacity:1 }
+        }
+
+        @keyframes animatebottom {
+            from{ bottom:-100px; opacity:0 }
+            to{ bottom:0; opacity:1 }
+        }
+
+        .three-line-legend {
+            width: 96px;
+            height: 70px;
+            position: absolute;
+            padding: 8px;
+            font-size: 12px;
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.23);
+            text-align: left;
+            z-index: 1000;
+            pointer-events: none;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
+          rel="stylesheet">
+</head>
+<body>
+<div id="header">
+    <a href=""><img src="images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
+</div>
+<div id="content">
+    <div id="cryptocurrency-pairs-wrapper">
+        <p id="current-cryptocurrency-pair">BTC/USDT</p>
+        <div id="search-input-wrapper">
+            <span class="material-icons-outlined" id="search-icon"> search </span>
+            <input type="text" id="search-input">
+        </div>
+        <ul id="list">
+        </ul>
+    </div>
+    <div id="wrapper">
+<span class="toggle-button buy-btn">
+    <input type="checkbox" name="" id="switch">
+    <label for="switch"></label>
+</span>
+        <!--    <p id="available-amount">Доступно 0 USDT</p>-->
+        <div class="field-wrapper" id="price-input-wrapper">
+            <p class="field-name">Цена</p>
+            <input type="number" name="input" class="input" id="price-input" placeholder="0">
+            <p class="cryptocurrency-name" id="second-cryptocurrency">USDT</p>
+        </div>
+        <div class="field-wrapper" id="amount-input-wrapper">
+            <p class="field-name">Количество</p>
+            <input type="number" name="input" class ="input" id="amount-input" placeholder="0">
+            <p class="cryptocurrency-name" id="first-cryptocurrency">BTC</p>
+        </div>
+        <div id="horizontal-line"></div>
+        <div class="field-wrapper">
+            <p class="field-name">Всего</p>
+            <p id="total-price"></p>
+            <p class="cryptocurrency-name" id="total-cryptocurrency">USDT</p>
+        </div>
+        <div id="btn-wrapper">
+            <button id="btn">
+                <div id="loader"></div>
+                <p id="btn-text">Купить BTC</p>
+            </button>
+        </div>
+    </div>
+    <div id="tvchart"></div>
+</div>
+</body>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+<script type="text/javascript" src="staticCharts/index.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+<script>
+    $(function () {
+        const $switchButton = document.getElementById('switch');
+        const $btnText = document.getElementById('btn-text');
+        const $priceInput = document.getElementById('price-input');
+        const $amountInput = document.getElementById('amount-input');
+        const $totalPrice = document.getElementById('total-price');
+        const $searchElement = document.getElementById('search-input');
+        const $listElement = document.getElementById('list');
+        const $currentPairLabel = document.getElementById('current-cryptocurrency-pair');
+        const $firstCryptocurrencyLabel = document.getElementById('first-cryptocurrency');
+        const $secondCryptocurrencyLabel = document.getElementById('second-cryptocurrency');
+        const $totalCryptocurrencyLabel = document.getElementById('total-cryptocurrency');
+
+
+        const cryptocurrencyPairs = ['BTC/USDT', 'BTC/DAI', 'ETH/USDT', 'ETH/DAI', 'BNB/USDT', 'BNB/DAI', 'DOT/USDT',
+            'DOT/DAI', 'UNI/USDT', 'UNI/DAI', 'BTC/ETH', 'ETH/UNI', 'BTC/DOT', 'ETH/DOT']
+
+        const defaultCryptocurrencyPair = 'BTC/USDT';
+        let firstCryptocurrency = defaultCryptocurrencyPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
+        let secondCryptocurrency = defaultCryptocurrencyPair.substring(defaultCryptocurrencyPair.indexOf('/') + 1,
+            defaultCryptocurrencyPair.length);
+
+        window.addEventListener("load", function (event) {
+            makeList();
+        }, false);
+
+        $switchButton.onclick = () => {
+            if ($('#switch').prop('checked')) $btnText.innerText = `Продать ${firstCryptocurrency}`;
+            else $btnText.innerText = `Купить ${firstCryptocurrency}`;
+        }
+
+        const decimals = 6;
+
+        $priceInput.oninput = () => {
+
+            $priceInput.value = Math.round(Number($priceInput.value) * 10**(decimals)) / 10**(decimals);
+            let price = Number($priceInput.value);
+            let amount = Number ($amountInput.value);
+            if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10**(decimals)) /
+                10**(decimals)).toString().replace('.',',');
+        }
+
+        $amountInput.oninput = () => {
+            $amountInput.value = Math.round(parseFloat($amountInput.value) * 10**(decimals)) / 10**(decimals);
+            let price = Number($priceInput.value);
+            let amount = Number ($amountInput.value);
+            if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10**(decimals)) /
+                10**(decimals)).toString().replace('.',',');
+        }
+
+        const makeList = () => {
+            let numberOfListItems = cryptocurrencyPairs.length,
+                listItem,
+                i;
+
+            for (i = 0; i < numberOfListItems; ++i) {
+                listItem = document.createElement('li');
+                listItem.innerHTML = cryptocurrencyPairs[i];
+                $listElement.appendChild(listItem);
+            }
+        }
+
+        $searchElement.onkeyup = () => {
+            let i, listItemValue;
+            let filter = $searchElement.value.toUpperCase();
+            if (filter.indexOf(' ') > -1) filter = filter.replace(' ', '/');
+            let li = $listElement.getElementsByTagName('li');
+
+            // Loop through all list items, and hide those who don't match the search query
+            for (i = 0; i < li.length; i++) {
+                listItemValue = li[i].innerText;
+                if (listItemValue.indexOf(filter) > -1) {
+                    li[i].style.display = "block";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+
+        function getEventTarget(e) {
+            e = e || window.event;
+            return e.target || e.srcElement;
+        }
+
+        const setCryptocurrency = (currentPair) => {
+            $currentPairLabel.innerText = currentPair;
+            firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
+            secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
+                currentPair.length);
+
+
+            if ($('#switch').prop('checked')) $btnText.innerText = `Продать ${firstCryptocurrency}`;
+            else $btnText.innerText = `Купить ${firstCryptocurrency}`;
+            $firstCryptocurrencyLabel.innerText = firstCryptocurrency;
+            $secondCryptocurrencyLabel.innerText = secondCryptocurrency;
+            $totalCryptocurrencyLabel.innerText = secondCryptocurrency;
+        }
+
+        $listElement.onclick = (event) => {
+            let target = getEventTarget(event).innerText;
+            setCryptocurrency(target);
+        }
+
+        const businessDayToString = (businessDay) => {
+            return new Date(Date.UTC(businessDay.year, businessDay.month - 1, businessDay.day, 0, 0, 0)).toLocaleDateString();
+        }
+
+        let toolTipMargin = 10;
+        let priceScaleWidth = 50;
+        let toolTip = document.createElement('div');
+        toolTip.className = 'three-line-legend';
+        const $tvchart = document.getElementById('tvchart');
+        $tvchart.appendChild(toolTip);
+        toolTip.style.display = 'block';
+        toolTip.style.left = 3 + 'px';
+        toolTip.style.top = 3 + 'px';
+
+        function setLastBarText() {
+            let dateStr = data[data.length - 1].time.year + ' - ' + data[data.length - 1].time.month + ' - ' + 	data[data.length - 1].time.day;
+            toolTip.innerHTML =	'<div style="font-size: 24px; margin: 4px 0px; color: #20262E"> AEROSPACE</div>'+ '<div style="font-size: 22px; margin: 4px 0px; color: #20262E">' + '</div>' +
+                '<div>' + dateStr + '</div>';
+        }
+
+        setLastBarText();
+
+        chart.subscribeCrosshairMove(function(param) {
+            if ( param === undefined || param.time === undefined || param.point.x < 0 || param.point.x > width || param.point.y < 0 || param.point.y > height ) {
+                setLastBarText();
+            } else {
+                let dateStr = param.time.year +' - '+ param.time.month + ' - ' + param.time.day;
+                // let price = param.seriesPrices.get(series);
+                toolTip.innerHTML =	'<div style="font-size: 24px; margin: 4px 0px; color: #20262E"> AEROSPACE</div>'+ '<div style="font-size: 22px; margin: 4px 0px; color: #20262E">' + '</div>' + '<div>' + dateStr + '</div>';
+            }
+
+
+        });
+
+    })
+</script>
+</html>
+
+
