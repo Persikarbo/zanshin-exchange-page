@@ -6,12 +6,19 @@
     <style>
         @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
+        :root {
+            --base-font-size: 14px;
+            --base-height: 40px;
+            --primary-color: #4C5C97;
+            --secondary-color: #BAC8FE; //animations
+        }
+
         body {
             background: url(images/background-image-2-3.png) top right no-repeat;
             background-attachment: fixed;
             background-size: cover;
-            /*align-items: center;*/
-            padding-top: 19px;
+            padding: 19px 13% 13%;
+            height: 100%; overflow: hidden;
         }
 
         #header {
@@ -19,15 +26,15 @@
             flex-direction: row;
             align-items: center;
             justify-content: flex-start;
-            padding: 0 13%;
             align-self: stretch;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
 
         #content {
             display: flex;
             flex-direction: row;
             justify-content: flex-start;
+            margin-top: 2%;
         }
 
         #cryptocurrency-pairs-wrapper {
@@ -35,9 +42,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 2%;
-            margin-left: 13%;
-            width: 16%;
+            padding: 3% 4%;
+            width: 30%;
 
             background: rgba(255, 255, 255, 0.2);
             border-radius: 15px;
@@ -47,11 +53,10 @@
             margin: 0 0 30px 0;
             width: 80%;
             text-align: center;
-            /*45 - border width*/
             line-height: 38px;
             font-family: "Open Sans";
             font-weight: bold;
-            font-size: 22px;
+            font-size: 18px;
             color: #FFFFFF;
             border-bottom: 2px solid rgba(255, 255, 255, .5);
         }
@@ -60,7 +65,7 @@
             display: flex;
             width: 100%;
             flex-direction: row;
-            height: 40px;
+            height: var(--base-height);
             border: 1.5px solid transparent;
             border-radius: 15px;
             margin-bottom: 15px;
@@ -68,13 +73,13 @@
         }
 
         #search-input-wrapper:hover {
-            border: 1.5px solid #A8BAF6;
+            border: 1.5px solid var(--secondary-color);
         }
 
         #search-icon {
-            font-size: 28px;
+            font-size: 20px;
             padding: 0 10px;
-            color: #4C5C97;
+            color: var(--primary-color);
             line-height: 40px;
             vertical-align: middle;
         }
@@ -84,7 +89,7 @@
             font-family: "Open Sans";
             border: none;
             background: transparent;
-            font-size: 18px;
+            font-size: var(--base-font-size);
         }
 
         #search-input:focus {
@@ -96,7 +101,7 @@
             list-style-type: none;
             padding: 0;
             margin: 0;
-            height: 17em;
+            height: 12em;
             overflow: auto;
         }
 
@@ -110,10 +115,12 @@
 
         #list li {
             display: block;
-            padding: 15px;
+            padding: 0 15px;
+            line-height: var(--base-height);
+            margin-bottom: 5px;
             text-decoration: none;
             font-family: "Open Sans";
-            font-size: 18px;
+            font-size: var(--base-font-size);
             color: #FFFFFF;
         }
 
@@ -126,10 +133,10 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            padding: 2%;
+            padding: 3% 4%;
             /*left: 35% - cryptocurrency-pairs-wrapper width and margin*/
-            margin-left: 2%;
-            width: 26%;
+            margin-left: 3%;
+            width: 60%;
 
             background: rgba(255, 255, 255, 0.2);
             border-radius: 15px;
@@ -137,7 +144,7 @@
 
         .toggle-button {
             position: relative;
-            height: 40px;
+            height: var(--base-height);
             background-color: rgba(255, 255, 255, 0.2);
             border-radius: 30px;
             margin-bottom: 30px;
@@ -152,7 +159,7 @@
             outline: none;
             appearance: none;
             font-family: "Open Sans";
-            font-size: 18px;
+            font-size: var(--base-font-size);
             color: #FFFFFF;
         }
 
@@ -189,20 +196,20 @@
         .toggle-button.buy-btn input:checked + label {
             right: 0;
             left: 50%;
-            background: #4C5C97;
+            background: var(--primary-color);
             transition: left 0.4s 0.2s, right 0.5s;
         }
 
         .toggle-button.buy-btn input:not(:checked) + label {
             left: 0;
             right: 50%;
-            background: #4C5C97;
+            background: var(--primary-color);
             transition: left 0.5s, right 0.4s 0.2s;
         }
 
         #available-amount {
             text-align: right;
-            margin: 10px 0;
+            margin: 0px 0;
             font-family: "Open Sans";
             font-size: 18px;
             color: #FFFFFF;
@@ -212,39 +219,40 @@
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 15px;
             padding: 0 20px;
             font-family: "Open Sans";
-            font-size: 18px;
+            height: var(--base-height);
+            font-size: var(--base-font-size);
             background: #FFFFFF;
             border: 1.5px solid transparent;
             border-radius: 15px;
         }
 
         #price-input-wrapper:hover, #amount-input-wrapper:hover {
-            border: 1.5px solid #A8BAF6;
+            border: 1.5px solid var(--secondary-color);
         }
 
         .field-name {
-            color: #4C5C97;
+            color: var(--primary-color);
             opacity: 60%;
             width: 30%;
         }
 
         .cryptocurrency-name {
             width: 15%;
-            color: #4C5C97;
+            color: var(--primary-color);
             text-align: right;
         }
 
         .input {
             width: 40%;
-            position: static;
             font-family: "Open Sans";
-            font-size: 18px;
+            font-size: var(--base-font-size);
+            height: fit-content;
             text-align: right;
-            color: #4C5C97;
-            background: transparent;
+            color: var(--primary-color);
             border: none;
         }
 
@@ -253,7 +261,7 @@
         }
 
         /* webkit input*/
-        ::-webkit-input-placeholder { text-align:right; color: #4C5C97; opacity: 60%;}
+        ::-webkit-input-placeholder { text-align:right; color: var(--primary-color); opacity: 60%;}
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -267,7 +275,7 @@
 
         #total-price {
             width: 45%;
-            color: #4C5C97;
+            color: var(--primary-color);
             text-align: right;
         }
 
@@ -294,10 +302,10 @@
 
         #btn {
             position: static;
-            height: 60px;
+            height: var(--base-height);
             border:  none;
 
-            background: #4C5C97;
+            background: var(--primary-color);
             border-radius: 15px;
 
             /* Inside Auto Layout */
@@ -308,7 +316,7 @@
         }
 
         #btn:hover {
-            background: #A8BAF6;
+            background: var(--secondary-color);
             transition: background .3s;
         }
 
@@ -316,7 +324,7 @@
             margin: 0px;
             position: static;
             font-family: Open Sans;
-            font-size: 18px;
+            font-size: var(--base-font-size);
             line-height: 20px;
             color: #FFFFFF;
         }
@@ -362,18 +370,53 @@
             to{ bottom:0; opacity:1 }
         }
 
-        .three-line-legend {
-            width: 96px;
-            height: 70px;
+        #chartContainer {
+            width: 100%;
+            height: 330px;
+            position: relative;
+        }
+
+        .floating-tooltip-2 {
+            width: fit-content;
+            height: fit-content;
             position: absolute;
+            display: none;
             padding: 8px;
             font-size: 12px;
-            color: #fff;
-            background-color: rgba(255, 255, 255, 0.23);
+            color: var(--primary-color);
+            background-color: rgba(255, 255, 255, 1);
             text-align: left;
             z-index: 1000;
             pointer-events: none;
+            border: 1px solid #4C5C97;
+            border-radius: 5px;
+            font-family: "Open Sans";
         }
+
+        #order-book {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            width: 30%;
+            margin-left: 2%;
+            padding: 2%;
+            font-family: "Open Sans";
+            color: white;
+            font-size: 11px;
+        }
+
+        .table {
+            width: 100%;
+            table-layout: fixed;
+            border-spacing: 5px 12px;
+        }
+
+        td {
+            text-align: right;
+        }
+
     </style>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
           rel="stylesheet">
@@ -382,54 +425,82 @@
 <div id="header">
     <a href=""><img src="images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
 </div>
-<div id="content">
-    <div id="cryptocurrency-pairs-wrapper">
-        <p id="current-cryptocurrency-pair">BTC/USDT</p>
-        <div id="search-input-wrapper">
-            <span class="material-icons-outlined" id="search-icon"> search </span>
-            <input type="text" id="search-input">
+<div style="display: flex; flex-direction: row;">
+    <div style="display: flex; flex-direction: column; width: 68%;">
+        <div id="chartContainer"><div class="floating-tooltip-2" id="tool-tip"></div></div>
+        <div id="content">
+            <div id="cryptocurrency-pairs-wrapper">
+                <div id="current-cryptocurrency-pair">BTC/USDT</div>
+                <div id="search-input-wrapper">
+                    <span class="material-icons-outlined" id="search-icon"> search </span>
+                    <input type="text" id="search-input">
+                </div>
+                <ul id="list">
+                </ul>
+            </div>
+            <div id="wrapper">
+                <span class="toggle-button buy-btn">
+                    <input type="checkbox" name="" id="switch">
+                    <label for="switch"></label>
+                </span>
+                <!--    <div id="available-amount">Доступно 0 USDT</div>-->
+                <div class="field-wrapper" id="price-input-wrapper">
+                    <div class="field-name">Цена</div>
+                    <input type="number" name="input" class="input" id="price-input" placeholder="0">
+                    <div class="cryptocurrency-name" id="second-cryptocurrency">USDT</div>
+                </div>
+                <div class="field-wrapper" id="amount-input-wrapper">
+                    <div class="field-name">Количество</div>
+                    <input type="number" name="input" class ="input" id="amount-input" placeholder="0">
+                    <div class="cryptocurrency-name" id="first-cryptocurrency">BTC</div>
+                </div>
+                <div id="horizontal-line"></div>
+                <div class="field-wrapper">
+                    <div class="field-name">Всего</div>
+                    <div id="total-price"></div>
+                    <div class="cryptocurrency-name" id="total-cryptocurrency">USDT</div>
+                </div>
+                <div id="btn-wrapper">
+                    <button id="btn">
+                        <div id="loader"></div>
+                        <div id="btn-text">Купить BTC</div>
+                    </button>
+                </div>
+            </div>
         </div>
-        <ul id="list">
-        </ul>
     </div>
-    <div id="wrapper">
-<span class="toggle-button buy-btn">
-    <input type="checkbox" name="" id="switch">
-    <label for="switch"></label>
-</span>
-        <!--    <p id="available-amount">Доступно 0 USDT</p>-->
-        <div class="field-wrapper" id="price-input-wrapper">
-            <p class="field-name">Цена</p>
-            <input type="number" name="input" class="input" id="price-input" placeholder="0">
-            <p class="cryptocurrency-name" id="second-cryptocurrency">USDT</p>
+    <div id="order-book">
+        <div style="height: 50%">
+            <table  id="asks-table" class="table">
+                <thead>
+                <tr>
+                    <th scope="col" id="table-price-col-1">Цена(USDT)</th>
+                    <th scope="col" id="table-amount-col-1">Количество(BTC)</th>
+                    <th scope="col">Всего</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
-        <div class="field-wrapper" id="amount-input-wrapper">
-            <p class="field-name">Количество</p>
-            <input type="number" name="input" class ="input" id="amount-input" placeholder="0">
-            <p class="cryptocurrency-name" id="first-cryptocurrency">BTC</p>
-        </div>
-        <div id="horizontal-line"></div>
-        <div class="field-wrapper">
-            <p class="field-name">Всего</p>
-            <p id="total-price"></p>
-            <p class="cryptocurrency-name" id="total-cryptocurrency">USDT</p>
-        </div>
-        <div id="btn-wrapper">
-            <button id="btn">
-                <div id="loader"></div>
-                <p id="btn-text">Купить BTC</p>
-            </button>
-        </div>
+        <table id="bids-table" class="table">
+            <thead>
+            <tr>
+                <th scope="col" id="table-price-col-2">Цена(USDT)</th>
+                <th scope="col" id="table-amount-col-2">Количество(BTC)</th>
+                <th scope="col">Всего</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
-    <div id="tvchart"></div>
 </div>
 </body>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 <script type="text/javascript" src="staticCharts/index.js"></script>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src="https://unpkg.com/@metamask/detect-provider/dist/detect-provider.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
     $(function () {
         const $switchButton = document.getElementById('switch');
@@ -443,7 +514,12 @@
         const $firstCryptocurrencyLabel = document.getElementById('first-cryptocurrency');
         const $secondCryptocurrencyLabel = document.getElementById('second-cryptocurrency');
         const $totalCryptocurrencyLabel = document.getElementById('total-cryptocurrency');
-
+        const $tablePriceCol1 = document.getElementById('table-price-col-1');
+        const $tablePriceCol2 = document.getElementById('table-price-col-2');
+        const $tableAmountCol1 = document.getElementById('table-amount-col-1');
+        const $tableAmountCol2 = document.getElementById('table-amount-col-2');
+        const $asksTable = document.getElementById('asks-table');
+        const $bidsTable = document.getElementById('bids-table');
 
         const cryptocurrencyPairs = ['BTC/USDT', 'BTC/DAI', 'ETH/USDT', 'ETH/DAI', 'BNB/USDT', 'BNB/DAI', 'DOT/USDT',
             'DOT/DAI', 'UNI/USDT', 'UNI/DAI', 'BTC/ETH', 'ETH/UNI', 'BTC/DOT', 'ETH/DOT']
@@ -455,6 +531,9 @@
 
         window.addEventListener("load", function (event) {
             makeList();
+            makeTable($asksTable);
+            makeTable($bidsTable);
+            setChartData();
         }, false);
 
         $switchButton.onclick = () => {
@@ -524,49 +603,106 @@
 
             if ($('#switch').prop('checked')) $btnText.innerText = `Продать ${firstCryptocurrency}`;
             else $btnText.innerText = `Купить ${firstCryptocurrency}`;
-            $firstCryptocurrencyLabel.innerText = firstCryptocurrency;
             $secondCryptocurrencyLabel.innerText = secondCryptocurrency;
+            $firstCryptocurrencyLabel.innerText = firstCryptocurrency;
             $totalCryptocurrencyLabel.innerText = secondCryptocurrency;
+            setChartData();
         }
 
         $listElement.onclick = (event) => {
             let target = getEventTarget(event).innerText;
-            setCryptocurrency(target);
+            if (target.length < 10) setCryptocurrency(target);
+            clearInterval(refreshOrderBook);
+            refreshOrderBook = setInterval(orderBook, 1000);
         }
 
-        const businessDayToString = (businessDay) => {
-            return new Date(Date.UTC(businessDay.year, businessDay.month - 1, businessDay.day, 0, 0, 0)).toLocaleDateString();
+        const orderBookLimit = 10;
+
+        const makeTable = (container) => {
+            let i,
+                j,
+                tableRow,
+                tableCell;
+
+            for (i = 0; i < orderBookLimit; ++i) {
+                tableRow = document.createElement('tr');
+                container.appendChild(tableRow);
+                for (j = 0; j < 3; ++j) {
+                    tableCell = document.createElement('td');
+                    tableRow.appendChild(tableCell);
+                }
+            }
         }
 
-        let toolTipMargin = 10;
-        let priceScaleWidth = 50;
-        let toolTip = document.createElement('div');
-        toolTip.className = 'three-line-legend';
-        const $tvchart = document.getElementById('tvchart');
-        $tvchart.appendChild(toolTip);
-        toolTip.style.display = 'block';
-        toolTip.style.left = 3 + 'px';
-        toolTip.style.top = 3 + 'px';
+        const orderBook = () => {
+            let request = new XMLHttpRequest();
+            request.open('GET','https://api.binance.com/api/v1/depth?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&limit=' + orderBookLimit,true);
+            request.onload = () => {
+                let orderBookData = JSON.parse(request.responseText);
 
-        function setLastBarText() {
-            let dateStr = data[data.length - 1].time.year + ' - ' + data[data.length - 1].time.month + ' - ' + 	data[data.length - 1].time.day;
-            toolTip.innerHTML =	'<div style="font-size: 24px; margin: 4px 0px; color: #20262E"> AEROSPACE</div>'+ '<div style="font-size: 22px; margin: 4px 0px; color: #20262E">' + '</div>' +
-                '<div>' + dateStr + '</div>';
-        }
+                for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
+                    let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
+                    cols[0].innerText = (parseFloat(orderBookData.asks[i][0])).toFixed(decimals);
+                    cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
+                    cols[0].style.borderRadius = '10px';
+                    cols[0].style.textAlign = 'center';
+                    cols[0].style.color = '#fff';
+                    cols[1].innerText = (parseFloat(orderBookData.asks[i][1])).toFixed(decimals);
+                    cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+                }
 
-        setLastBarText();
-
-        chart.subscribeCrosshairMove(function(param) {
-            if ( param === undefined || param.time === undefined || param.point.x < 0 || param.point.x > width || param.point.y < 0 || param.point.y > height ) {
-                setLastBarText();
-            } else {
-                let dateStr = param.time.year +' - '+ param.time.month + ' - ' + param.time.day;
-                // let price = param.seriesPrices.get(series);
-                toolTip.innerHTML =	'<div style="font-size: 24px; margin: 4px 0px; color: #20262E"> AEROSPACE</div>'+ '<div style="font-size: 22px; margin: 4px 0px; color: #20262E">' + '</div>' + '<div>' + dateStr + '</div>';
+                for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
+                    let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
+                    cols[0].innerText = (parseFloat(orderBookData.bids[i][0])).toFixed(decimals);
+                    cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
+                    cols[0].style.borderRadius = '10px';
+                    cols[0].style.textAlign = 'center';
+                    cols[0].style.color = '#fff';
+                    cols[1].innerText = (parseFloat(orderBookData.bids[i][1])).toFixed(decimals);
+                    cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+                }
             }
 
+            request.send();
 
-        });
+            let currentPair = $currentPairLabel.innerText;
+            firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
+            secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
+                currentPair.length);
+            $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
+            $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
+            $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
+            $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
+
+        }
+
+        const setChartData = () => {
+            fetch('https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1000')
+                .then(res => res.json())
+                        .then(data => {
+                            const cdata = data.map(d => {
+                                return {time:d[0]/1000,open:parseFloat(d[1]),high:parseFloat(d[2]),low:parseFloat(d[3]),close:parseFloat(d[4])}
+                            });
+                            candleSeries.setData(cdata);
+                        })
+                        .catch(err => console.log(err))
+            }
+
+        const updateChartData = () => {
+            let request = new XMLHttpRequest();
+            request.open('GET','https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1',true);
+            request.onload = () => {
+                let chartData = JSON.parse(request.responseText);
+                let currentData = {time:chartData[0][0]/1000,open:parseFloat(chartData[0][1]),high:parseFloat(chartData[0][2]),low:parseFloat(chartData[0][3]),close:parseFloat(chartData[0][4])};
+                console.log(candleSeries);
+                candleSeries.update(currentData);
+                }
+
+            request.send();
+        }
+
+        let refreshChart = setInterval(updateChartData, 1000);
+        let refreshOrderBook = setInterval(orderBook,1000);
 
     })
 </script>
