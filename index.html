@@ -25,9 +25,34 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-self: stretch;
             margin-bottom: 30px;
+        }
+
+        #header-buttons {
+            display: flex;
+            flex-direction: row;
+            /*justify-content: space-between;*/
+            width: 30%;
+        }
+
+        #header-buttons a {
+            font-family: "Open Sans";
+            font-size: var(--base-font-size);
+            color: white;
+            text-decoration: none;
+        }
+
+        #login-btn {
+            width: 40%;
+            text-align: center;
+            border-right: 2px solid #FFFFFF;
+        }
+
+        #signup-btn {
+            text-align: center;
+            width: 60%;
         }
 
         #content {
@@ -424,6 +449,10 @@
 <body>
 <div id="header">
     <a href=""><img src="images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
+    <div id="header-buttons">
+        <div id="login-btn"><a href="login.html">Вход</a></div>
+        <div id="signup-btn"><a href="sign_up.html">Регистрация</a></div>
+    </div>
 </div>
 <div style="display: flex; flex-direction: row;">
     <div style="display: flex; flex-direction: column; width: 68%;">
@@ -676,6 +705,63 @@
 
         }
 
+        // const orderBook = () => {
+        //     let orderBookData = {
+        //         asks: [],
+        //         bids: [],
+        //     }
+        //
+        //     fetch('http://178.176.120.241:5000/getTradeOrders')
+        //         .then(res => res.json())
+        //         .then(data => {
+        //             const obdata = data.tradeOrders.map(d => {
+        //                 return {price:d.price, direction: d.send, amount: d.sendVol}
+        //             });
+        //
+        //             obdata.forEach( element => {
+        //                 let direction = element.direction;
+        //                 if (direction === 'btc') orderBookData.bids.push({price: element.price, amount: element.amount})
+        //                 if (direction === 'usdt') orderBookData.asks.push({price: element.price, amount: element.amount})
+        //             })
+        //         })
+        //         .catch(err => console.log(err))
+        //
+        //     console.log(orderBookData.asks);
+
+            // for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
+            //     let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
+            //     cols[0].innerText = (parseFloat(orderBookData.asks[i][0])).toFixed(decimals);
+            //     cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
+            //     cols[0].style.borderRadius = '10px';
+            //     cols[0].style.textAlign = 'center';
+            //     cols[0].style.color = '#fff';
+            //     cols[1].innerText = (parseFloat(orderBookData.asks[i][1])).toFixed(decimals);
+            //     cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+            // }
+            //
+            // for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
+            //     let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
+            //     cols[0].innerText = (parseFloat(orderBookData.bids[i][0])).toFixed(decimals);
+            //     cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
+            //     cols[0].style.borderRadius = '10px';
+            //     cols[0].style.textAlign = 'center';
+            //     cols[0].style.color = '#fff';
+            //     cols[1].innerText = (parseFloat(orderBookData.bids[i][1])).toFixed(decimals);
+            //     cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+            // }
+
+        //
+        //     let currentPair = $currentPairLabel.innerText;
+        //     firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
+        //     secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
+        //         currentPair.length);
+        //     $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
+        //     $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
+        //     $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
+        //     $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
+        //
+        // }
+
         const setChartData = () => {
             fetch('https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1000')
                 .then(res => res.json())
@@ -694,7 +780,6 @@
             request.onload = () => {
                 let chartData = JSON.parse(request.responseText);
                 let currentData = {time:chartData[0][0]/1000,open:parseFloat(chartData[0][1]),high:parseFloat(chartData[0][2]),low:parseFloat(chartData[0][3]),close:parseFloat(chartData[0][4])};
-                console.log(candleSeries);
                 candleSeries.update(currentData);
                 }
 
