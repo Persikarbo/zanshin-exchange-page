@@ -14,7 +14,7 @@
         }
 
         body {
-            background: url('/static/images/background-image-2-3.png') no-repeat fixed top right;
+            background: url('../static/images/background-image-2-3.png') no-repeat fixed top right;
             background-size: cover;
             padding: 19px 13% 13%;
             height: 100%; overflow: hidden;
@@ -447,7 +447,7 @@
 </head>
 <body>
 <div id="header">
-    <a href=""><img src="/static/images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
+    <a href=""><img src="../static/images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
     <div id="header-buttons">
         <div id="login-btn"><a href="login.html">Вход</a></div>
         <div id="signup-btn"><a href="sign_up.html">Регистрация</a></div>
@@ -526,9 +526,8 @@
 </div>
 </body>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-<script type="text/javascript" src="staticCharts/index.js"></script>
+<script type="text/javascript" src="../static/scripts/dynamicCharts/index.js"></script>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
     $(function () {
         const $switchButton = document.getElementById('switch');
@@ -634,6 +633,12 @@
             $secondCryptocurrencyLabel.innerText = secondCryptocurrency;
             $firstCryptocurrencyLabel.innerText = firstCryptocurrency;
             $totalCryptocurrencyLabel.innerText = secondCryptocurrency;
+
+            $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
+            $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
+            $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
+            $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
+
             setChartData();
         }
 
@@ -662,93 +667,36 @@
             }
         }
 
-        const orderBook = () => {
-            let request = new XMLHttpRequest();
-            request.open('GET','https://api.binance.com/api/v1/depth?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&limit=' + orderBookLimit,true);
-            request.onload = () => {
-                let orderBookData = JSON.parse(request.responseText);
-
-                for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
-                    let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
-                    cols[0].innerText = (parseFloat(orderBookData.asks[i][0])).toFixed(decimals);
-                    cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
-                    cols[0].style.borderRadius = '10px';
-                    cols[0].style.textAlign = 'center';
-                    cols[0].style.color = '#fff';
-                    cols[1].innerText = (parseFloat(orderBookData.asks[i][1])).toFixed(decimals);
-                    cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
-                }
-
-                for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
-                    let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
-                    cols[0].innerText = (parseFloat(orderBookData.bids[i][0])).toFixed(decimals);
-                    cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
-                    cols[0].style.borderRadius = '10px';
-                    cols[0].style.textAlign = 'center';
-                    cols[0].style.color = '#fff';
-                    cols[1].innerText = (parseFloat(orderBookData.bids[i][1])).toFixed(decimals);
-                    cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
-                }
-            }
-
-            request.send();
-
-            let currentPair = $currentPairLabel.innerText;
-            firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
-            secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
-                currentPair.length);
-            $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
-            $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
-            $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
-            $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
-
-        }
-
         // const orderBook = () => {
-        //     let orderBookData = {
-        //         asks: [],
-        //         bids: [],
+        //     let request = new XMLHttpRequest();
+        //     request.open('GET','https://api.binance.com/api/v1/depth?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&limit=' + orderBookLimit,true);
+        //     request.onload = () => {
+        //         let orderBookData = JSON.parse(request.responseText);
+        //
+        //         for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
+        //             let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
+        //             cols[0].innerText = (parseFloat(orderBookData.asks[i][0])).toFixed(decimals);
+        //             cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
+        //             cols[0].style.borderRadius = '10px';
+        //             cols[0].style.textAlign = 'center';
+        //             cols[0].style.color = '#fff';
+        //             cols[1].innerText = (parseFloat(orderBookData.asks[i][1])).toFixed(decimals);
+        //             cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+        //         }
+        //
+        //         for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
+        //             let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
+        //             cols[0].innerText = (parseFloat(orderBookData.bids[i][0])).toFixed(decimals);
+        //             cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
+        //             cols[0].style.borderRadius = '10px';
+        //             cols[0].style.textAlign = 'center';
+        //             cols[0].style.color = '#fff';
+        //             cols[1].innerText = (parseFloat(orderBookData.bids[i][1])).toFixed(decimals);
+        //             cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+        //         }
         //     }
         //
-        //     fetch('http://178.176.120.241:5000/getTradeOrders')
-        //         .then(res => res.json())
-        //         .then(data => {
-        //             const obdata = data.tradeOrders.map(d => {
-        //                 return {price:d.price, direction: d.send, amount: d.sendVol}
-        //             });
-        //
-        //             obdata.forEach( element => {
-        //                 let direction = element.direction;
-        //                 if (direction === 'btc') orderBookData.bids.push({price: element.price, amount: element.amount})
-        //                 if (direction === 'usdt') orderBookData.asks.push({price: element.price, amount: element.amount})
-        //             })
-        //         })
-        //         .catch(err => console.log(err))
-        //
-        //     console.log(orderBookData.asks);
-
-            // for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
-            //     let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
-            //     cols[0].innerText = (parseFloat(orderBookData.asks[i][0])).toFixed(decimals);
-            //     cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
-            //     cols[0].style.borderRadius = '10px';
-            //     cols[0].style.textAlign = 'center';
-            //     cols[0].style.color = '#fff';
-            //     cols[1].innerText = (parseFloat(orderBookData.asks[i][1])).toFixed(decimals);
-            //     cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
-            // }
-            //
-            // for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
-            //     let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
-            //     cols[0].innerText = (parseFloat(orderBookData.bids[i][0])).toFixed(decimals);
-            //     cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
-            //     cols[0].style.borderRadius = '10px';
-            //     cols[0].style.textAlign = 'center';
-            //     cols[0].style.color = '#fff';
-            //     cols[1].innerText = (parseFloat(orderBookData.bids[i][1])).toFixed(decimals);
-            //     cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
-            // }
-
+        //     request.send();
         //
         //     let currentPair = $currentPairLabel.innerText;
         //     firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
@@ -760,6 +708,62 @@
         //     $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
         //
         // }
+
+        let orderBookData = {
+            asks: [],
+            bids: [],
+        }
+
+        const parseData = (data) => {
+            orderBookData = {
+                asks: [],
+                bids: [],
+            }
+
+            data.forEach( element => {
+                let direction = element.direction;
+                if (direction === 'uni') orderBookData.asks.push({price: element.price, amount: element.amount});
+                if (direction === 'usdt') orderBookData.bids.push({price: element.price, amount: element.amount});
+            })
+        }
+
+        const orderBook = () => {
+            fetch('http://178.176.120.241:5000/getTradeOrders')
+                .then(res => res.json())
+                .then(data => {
+                    const obdata = data.tradeOrders.map(d => {
+                        return {price:d.price, direction: d.send, amount: d.sendVol}
+                    });
+                    parseData(obdata);
+
+                    for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
+                        let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
+                        if (orderBookData.asks[i] !== undefined && i < orderBookData.asks.length) {
+                            cols[0].innerText = orderBookData.asks[i].price.toFixed(decimals);
+                            cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
+                            cols[0].style.borderRadius = '10px';
+                            cols[0].style.textAlign = 'center';
+                            cols[0].style.color = '#fff';
+                            cols[1].innerText = orderBookData.asks[i].amount.toFixed(decimals);
+                            cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+                        }
+                    }
+
+                    for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
+                        let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
+                        if (orderBookData.bids[i] !== undefined && i < orderBookData.bids.length) {
+                            cols[0].innerText = orderBookData.bids[i].price.toFixed(decimals);
+                            cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
+                            cols[0].style.borderRadius = '10px';
+                            cols[0].style.textAlign = 'center';
+                            cols[0].style.color = '#fff';
+                            cols[1].innerText = orderBookData.bids[i].amount.toFixed(decimals);
+                            cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+                        }
+                    }
+                })
+                .catch(err => console.log(err))
+        }
 
         const setChartData = () => {
             fetch('https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1000')

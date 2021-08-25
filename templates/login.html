@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Zanshin SignUp</title>
+    <title>Zanshin Login</title>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
@@ -12,7 +12,7 @@
         }
 
         body {
-            background: url('/static/images/background-image-2-3.png') top right no-repeat;
+            background: url('../static/images/background-image-2-3.png') top right no-repeat;
             background-attachment: fixed;
             background-size: cover;
             /*padding-top: 19px;*/
@@ -174,11 +174,10 @@
         #btn:hover {
             background: #A8BAF6;
             transition: background .3s;
-            border: none;
         }
 
         #text-link {
-
+            margin-top: 16px;
             font-family: Open Sans;
             font-style: normal;
             font-weight: normal;
@@ -192,56 +191,71 @@
             text-decoration: none;
         }
 
-        #small-text {
-            margin-top: 16px;
-            font-family: Open Sans;
-            font-style: normal;
-            font-weight: normal;
-            font-size: 20px;
-            line-height: 27px;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            text-align: left;
-            width: 100%;
+        #loader {
+            margin-left: auto;
+            margin-right: auto;
+            display: none;
+            border: 3px solid #FFFFFF;
+            border-radius: 50%;
+            border-top: 3px solid transparent;
+            width: 12px;
+            height: 12px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @-webkit-keyframes animatebottom {
+            from { bottom:-100px; opacity:0 }
+            to { bottom:0px; opacity:1 }
+        }
+
+        @keyframes animatebottom {
+            from{ bottom:-100px; opacity:0 }
+            to{ bottom:0; opacity:1 }
         }
 
     </style>
 </head>
 <body>
-<div id="header">
-    <a href=""><img src="/static/images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
-</div>
-<div id="content">
-    <div id="wrap-content">
-        <div id="form">
-            <div id="title">
-                <span class="name">Создание аккаунта</span>
-                <span class="welcome-text">Добро пожаловать в Zanshin!</span>
+    <div id="header">
+        <a href="index.html"><img src="../static/images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
+    </div>
+    <div id="content">
+        <div id="wrap-content">
+            <div id="form">
+                <div id="title">
+                    <span class="name">Вход в аккаунт</span>
+                    <span class="welcome-text">Добро пожаловать в Zanshin!</span>
+                </div>
+<!--                <div class="field">-->
+<!--                    <label for="email">E-mail</label>-->
+<!--                    <input type="email"  name="email" id="email" required>-->
+<!--                </div>-->
+                <div class="field">
+                    <label for="password">Пароль</label>
+                    <input type="password"  placeholder="Введите пароль" name="password" id="password" required>
+                </div>
+                <div id="btn-wrapper">
+
+                    <button id="btn">
+                        <div id="loader"></div>
+                        <span id="btn-text">Войти в аккаунт</span>
+                    </button>
+                </div>
+                <a href="sign_up.html" id="text-link">Зарегистрироваться</a>
             </div>
-<!--            <div class="field">-->
-<!--                <label for="email">E-mail</label>-->
-<!--                <input type="email"  name="email" id="email" required>-->
-<!--            </div>-->
-            <div class="field">
-                <label for="password">Пароль</label>
-                <input type="password"  placeholder="Введите пароль" name="password" id="password" required>
-            </div>
-            <div class="field">
-                <label for="password">Повторите пароль</label>
-                <input type="password"  placeholder="Введите пароль еще раз" name="password" id="confirm" required>
-            </div>
-            <div id="btn-wrapper">
-                <button id="btn">
-                    <div id="loader"></div>
-                    <span id="btn-text">Создать аккаунт</span>
-                </button>
-            </div>
-            <span id="small-text">Уже зарегистрированы?</span>
-            <a href="login.html" id="text-link">Войти в аккаунт</a>
         </div>
     </div>
-</div>
 </body>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script>
@@ -253,27 +267,23 @@
         const $btn = document.getElementById("btn");
         const $loader = document.getElementById("loader");
         const $btnText = document.getElementById("btn-text");
-        const $confirmPasswordInput = document.getElementById("confirm");
 
         $btn.onclick = async () => {
             let password = $passwordInput.value;
-            let password2 = $confirmPasswordInput.value;
-            if (password !== password2) {
-                setMessageToButton("Пароли не совпадают", $error);
-                return;
-            }
             showLoader()
-            let result = await postData(API_URL + "/wallet/new", {password});
+            let result = await postData(API_URL + "/wallet/login", {password});
             hideLoader()
-            if (result.status === 200) {
-                document.location.href = "index.html";
-                console.log(await result.json());
-            }
-            else {
+            if (result.status === 500)
                 setMessageToButton("Попробуйте еще раз", $error);
+            else {
+                result = await result.json()
+                console.log(result)
+                if (result.MSG !== true && result.MSG.includes("Wrong password"))
+                    setMessageToButton("Неправильный пароль", $error);
+                else document.location.href = "index.html";
             }
-        }
 
+        }
         const setMessageToButton = (message, backgroundColor = $main) => {
             $btn.style.background = backgroundColor;
             $btn.style.pointerEvents = "none";
@@ -284,14 +294,10 @@
             returnOldButton();
         }
 
-        $confirmPasswordInput.oninput = () => {
-            returnOldButton();
-        }
-
         const returnOldButton = () => {
             $btn.style.pointerEvents = "auto";
             $btn.style.removeProperty("background");
-            $btnText.innerText = "Создать аккаунт";
+            $btnText.innerText = "Войти в аккаунт";
         }
 
         const showLoader = () => {
