@@ -245,7 +245,8 @@
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script>
     $(function () {
-        const API_URL = "http://192.168.0.102:5000"
+        const API_URL = "http://178.176.120.241:5000"
+        //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
         $main = "#4C5C97"
         $error = "#E27B7B";
         const $passwordInput = document.getElementById("password");
@@ -255,22 +256,29 @@
         const $confirmPasswordInput = document.getElementById("confirm");
 
         $btn.onclick = async () => {
-            let password = $passwordInput.value;
-            let password2 = $confirmPasswordInput.value;
-            if (password !== password2) {
-                setMessageToButton("Пароли не совпадают", $error);
-                return;
+            try {
+                let password = $passwordInput.value;
+                let password2 = $confirmPasswordInput.value;
+                if (password !== password2) {
+                    setMessageToButton("Пароли не совпадают", $error);
+                    return;
+                }
+                showLoader()
+                let result = await postData(API_URL + "/wallet/new", {password});
+                hideLoader()
+                if (result.status === 200) {
+                    localStorage.setItem('walletAddress', (await result.json()).ADDRESS);
+                    document.location.href = "login.html";
+                    console.log(await result.json());
+                }
+                else {
+                    setMessageToButton("Попробуйте позже", $error);
+                }
+            } catch (e) {
+                hideLoader();
+                setMessageToButton("Попробуйте позже", $error);
             }
-            showLoader()
-            let result = await postData(API_URL + "/wallet/new", {password});
-            hideLoader()
-            if (result.status === 200) {
-                document.location.href = "index.html";
-                console.log(await result.json());
-            }
-            else {
-                setMessageToButton("Попробуйте еще раз", $error);
-            }
+
         }
 
         const setMessageToButton = (message, backgroundColor = $main) => {
