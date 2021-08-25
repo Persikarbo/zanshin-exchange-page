@@ -265,8 +265,10 @@
             showLoader()
             let result = await postData(API_URL + "/wallet/new", {password});
             hideLoader()
-            if (result.status === 200)
-                 console.log(await result.json())
+            if (result.status === 200) {
+                document.location.href = "index.html";
+                console.log(await result.json());
+            }
             else {
                 setMessageToButton("Попробуйте еще раз", $error);
             }

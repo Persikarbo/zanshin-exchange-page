@@ -280,6 +280,7 @@
                 console.log(result)
                 if (result.MSG !== true && result.MSG.includes("Wrong password"))
                     setMessageToButton("Неправильный пароль", $error);
+                else document.location.href = "index.html";
             }
 
         }
