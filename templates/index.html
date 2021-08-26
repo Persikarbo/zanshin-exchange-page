@@ -610,6 +610,7 @@
 
         const $primaryColor="#4C5C97"
         const $error = "#E27B7B";
+        const $success = "#9FAF90";
 
         const cryptocurrencyPairs = ['BTC/USDT', 'BTC/DAI', 'ETH/USDT', 'ETH/DAI', 'BNB/USDT', 'BNB/DAI', 'DOT/USDT',
             'DOT/DAI', 'UNI/USDT', 'UNI/DAI', 'BTC/ETH', 'ETH/UNI', 'BTC/DOT', 'ETH/DOT']
@@ -877,11 +878,11 @@
             const amount = parseFloat($amountInput.value);
 
             if (price === 0 || isNaN(price)) {
-                setMessageToButton("Цена не может быть 0", $error);
+                setMessageToButton("Введите цену", $error);
                 return;
             }
             if (amount === 0 || isNaN(amount)) {
-                setMessageToButton("Количество не может быть 0", $error);
+                setMessageToButton("Введите количество", $error);
                 return;
             }
             //getVol == price*sendVol  sell
@@ -918,6 +919,10 @@
                 console.log(await result.json());
                 if (data.MSG && data.MSG.includes("Try to sign in first")) {
                     showAuthError();
+                } else if (data.MSG && data.MSG.includes("Tx pool synced among")) {
+                    setMessageToButton("Заявка отправлена", $success);
+                    $priceInput.value = NaN;
+                    $amountInput.value = Nan;
                 }
             } catch (e) {
                 hideLoader();
