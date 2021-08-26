@@ -625,7 +625,6 @@
             makeTable($asksTable);
             makeTable($bidsTable);
             // setChartData();
-            setChartData();
             if (localStorage.getItem('walletAddress') === null) {
                 showAuthError();
             } else {
@@ -897,7 +896,7 @@
         // }
 
         const updateChartData = () => {
-            fetch('http://178.176.120.241:5000/chain')
+            fetch(`${API_URL}/chain`)
                 .then(res => res.json())
                 .then(data => {
                     data.chain.shift();
@@ -946,11 +945,11 @@
             const amount = parseFloat($amountInput.value);
 
             if (price === 0 || isNaN(price)) {
-                setMessageToButton("Цена не может быть 0", $error);
+                setMessageToButton("Введите цену", $error);
                 return;
             }
             if (amount === 0 || isNaN(amount)) {
-                setMessageToButton("Количество не может быть 0", $error);
+                setMessageToButton("Введите количество", $error);
                 return;
             }
             //getVol == price*sendVol  sell

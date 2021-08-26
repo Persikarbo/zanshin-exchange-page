@@ -54,6 +54,35 @@ const candleSeries = chart.addCandlestickSeries({
     // wickUpColor: '#8299FE',
 });
 
+const volumeSeries = chart.addHistogramSeries({
+    upColor: 'yellow',
+    downColor: 'green',
+    priceFormat: {
+        type: 'volume',
+    },
+    priceScaleId: '',
+    scaleMargins: {
+        top: 0.8,
+        bottom: 0,
+    },
+});
+
+volumeSeries.setData([
+    { time: '2018-10-19', value: 54.90 },
+    { time: '2018-10-22', value: 54.98 },
+    { time: '2018-10-23', value: 57.21 },
+    { time: '2018-10-24', value: 57.42 },
+    { time: '2018-10-25', value: 56.43 },
+    { time: '2018-10-26', value: 55.51 },
+    { time: '2018-10-29', value: 56.48 },
+    { time: '2018-10-30', value: 58.18 },
+    { time: '2018-10-31', value: 57.09 },
+    { time: '2018-11-01', value: 56.05 },
+    { time: '2018-11-02', value: 56.63 },
+    { time: '2018-11-05', value: 57.21 },
+    { time: '2018-11-06', value: 57.21 },
+    { time: '2018-11-07', value: 57.65 }])
+
 const toolTipWidth = 60; //100
 const toolTipHeight = 80; //80
 const toolTipMargin = 15; //15
