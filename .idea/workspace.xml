@@ -30,7 +30,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: set own data to trading view chart and order book" />
+    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: set own data to trading view chart and order book">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/sign_up.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sign_up.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -91,7 +96,7 @@
       <workItem from="1629703061589" duration="44131000" />
       <workItem from="1629782217537" duration="6568000" />
       <workItem from="1629868433232" duration="25870000" />
-      <workItem from="1629959906442" duration="1044000" />
+      <workItem from="1629959906442" duration="1973000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1629703298500</created>
