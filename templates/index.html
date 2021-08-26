@@ -29,55 +29,66 @@
             margin-bottom: 30px;
         }
 
-        #header-buttons {
+        .header-buttons {
             display: flex;
             flex-direction: row;
             /*justify-content: space-between;*/
             width: 30%;
         }
 
-        #header-buttons a {
+        .header-buttons a {
             font-family: "Open Sans";
             font-size: var(--base-font-size);
             color: white;
             text-decoration: none;
+            cursor: pointer;
         }
 
-        #login-btn {
-            width: 40%;
+        /*.header-buttons a:after {*/
+        /*    padding-top: 5px;*/
+        /*    background-color: white;*/
+        /*    display: block;*/
+        /*    content: "";*/
+        /*    height: 2px;*/
+        /*    width: 0%;*/
+        /*    -webkit-transition: width .3s ease-in-out;*/
+        /*    -moz--transition: width .3s ease-in-out;*/
+        /*    transition: width .3s ease-in-out;*/
+        /*}*/
+
+        /*.header-buttons a:hover:after,*/
+        /*.header-buttons a:focus:after {*/
+        /*    width: 100%;*/
+        /*}*/
+
+        .first-btn {
+            width: 50%;
             text-align: center;
             border-right: 2px solid #FFFFFF;
         }
 
-        #signup-btn {
+        .second-btn {
             text-align: center;
-            width: 60%;
-        }
-
-        #exit-btn {
-            font-family: "Open Sans";
-            font-size: var(--base-font-size);
-            color: white;
-            cursor: pointer;
-            text-align: center;
-            display: none;
+            width: 50%;
         }
 
         #triangle{
             width: 0;
             height: 0;
-            margin-left: 17%;
+            margin-left: 23%;
             border-style: solid;
             border-width: 0 10px 10px 10px;
-            border-color: transparent transparent hotpink transparent;
+            border-color: transparent transparent #F2F8FF transparent;
         }
 
         #account-wrapper {
+            visibility: hidden;
             width: 100%;
             position: relative;
             display: flex;
             flex-direction: row;
             justify-content: flex-end;
+
         }
 
         #account-window-with-triangle{
@@ -87,18 +98,136 @@
             position: absolute;
             width: 30%;
             z-index: 10;
+            height: 340px;
         }
 
         #account-window {
             padding: 5%;
             height: 330px;
-            background-color: hotpink;
+            background: #F2F8FF;
+            border-radius: 15px;
         }
 
         #account-content{
             width: 100%;
             height: 100%;
-            background-color: blueviolet;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #account-address-wrapper {
+            position: relative;
+            height: 40px;
+            border: none;
+            border-radius: 30px;
+            flex: none;
+            order: 0;
+            flex-grow: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #BAC8FE;
+            margin-top: 10px;
+            width: 70%;
+        }
+
+        #account-address {
+            margin: 0px;
+            position: static;
+            font-family: Open Sans;
+            font-size: var(--base-font-size);
+            line-height: 20px;
+            color: #FFFFFF;
+            margin-left: 25px;
+        }
+
+        #copy-icon {
+            font-size: 20px;
+            padding: 0 10px;
+            color: white;
+            line-height: 40px;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+
+        #copy-message-with-triangle {
+            opacity: 0;
+            transition: opacity 0.1s;
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+            align-items: center;
+            top: 34%;
+        }
+
+        #copy-message {
+            background: #4C5C97;
+            border-radius: 10px;
+            width: 50%;
+            text-align: center;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: -96%;
+            font-family: "Open Sans";
+            font-size: 14px;
+            color: white;
+        }
+
+        #copy-message-triangle {
+            margin-top: -39px;
+            content: "";
+            position: absolute;
+            top: -34%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent #4C5C97 transparent;
+        }
+
+        #tokens-list-title {
+            font-family: Open Sans;
+            font-size: var(--base-font-size);
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #4C5C97;
+            padding: 15px 20px;
+            border-bottom: 4px solid #BAC8FE;
+        }
+
+        #tokens-list {
+            width: 100%;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            height: 12em;
+            overflow: auto;
+        }
+
+        #tokens-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #tokens-list::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, .5);
+        }
+
+        #tokens-list li {
+            display: block;
+            padding: 4px 15px 8px;
+            margin: 0px 34px;
+            line-height: var(--base-height);
+            margin-bottom: 5px;
+            text-decoration: none;
+            font-family: "Open Sans";
+            font-size: var(--base-font-size);
+            color: #4C5C97;
+            border-bottom: 1px solid #E1E8F5;
         }
 
         #content {
@@ -529,17 +658,38 @@
 <body>
 <div id="header">
     <a href=""><img src="../static/images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
-    <div id="header-buttons">
-        <div id="login-btn"><a href="login.html">Вход</a></div>
-        <div id="signup-btn"><a href="sign_up.html">Регистрация</a></div>
-        <div id="exit-btn">Выход</div>
+    <div class="header-buttons" id="auth-buttons">
+        <div class="first-btn" ><a href="login.html">Вход</a></div>
+        <div class="second-btn"><a href="sign_up.html">Регистрация</a></div>
+    </div>
+    <div class="header-buttons" id="acc-buttons">
+        <div class="first-btn" ><a id="acc-btn">Мой аккаунт</a></div>
+        <div class="second-btn"><a id="exit-btn">Выход</a></div>
     </div>
 </div>
 <div id="account-wrapper">
     <div id="account-window-with-triangle">
         <div id="triangle"></div>
         <div id="account-window">
-            <div id="account-content"></div>
+            <div id="account-content">
+                <div id="account-address-wrapper">
+                    <span id="account-address"></span>
+                    <div id="copy-icon-wrapper">
+                        <span id="copy-icon" class="material-icons-outlined">
+                        content_copy
+                        </span>
+                    </div>
+
+                </div>
+                <div id="copy-message-with-triangle">
+                    <div id="copy-message-triangle"></div>
+                    <span id="copy-message">Адрес скопирован</span>
+                </div>
+                <span id="tokens-list-title">
+                    Активы
+                </span>
+                <ul id="tokens-list"></ul>
+            </div>
         </div>
     </div>
 </div>
@@ -653,10 +803,17 @@
         const $authError = document.getElementById('auth-error');
         const $loginBtn =  document.getElementById('login-btn');
         const $signUpBtn = document.getElementById('signup-btn');
-        const $exitBtn = document.getElementById('exit-btn');
-        const $headerButtons = document.getElementById('header-buttons');
         const $totalAndBtnWrapper = document.getElementById('total-and-btn-wrapper');
         const $totalPriceField = document.getElementById('total-price-field');
+        const $authButtons = document.getElementById('auth-buttons');
+        const $accButtons = document.getElementById('acc-buttons');
+        const $accButton = document.getElementById('acc-btn');
+        const $exitBtn = document.getElementById('exit-btn');
+        const $accAddress = document.getElementById('account-address');
+        const $tokensListElement =  document.getElementById('tokens-list');
+        const $copyIcon = document.getElementById('copy-icon');
+        const $copyMessage = document.getElementById('copy-message-with-triangle');
+        const $accountWrapper = document.getElementById('account-wrapper');
 
         const API_URL = 'http://178.176.120.241:5000';
         //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
@@ -676,18 +833,19 @@
         let secondCryptocurrency = defaultCryptocurrencyPair.substring(defaultCryptocurrencyPair.indexOf('/') + 1,
             defaultCryptocurrencyPair.length);
 
-        window.addEventListener("load", function (event) {
+        window.addEventListener("load", async function (event) {
             makeList();
             makeTable($asksTable);
             makeTable($bidsTable);
             // setChartData();
-            if (localStorage.getItem('walletAddress') === null) {
+            let walletAddress = localStorage.getItem('walletAddress');
+            if (walletAddress === null) {
                 showAuthError();
             } else {
-                $loginBtn.style.display = "none";
-                $signUpBtn.style.display = "none";
-                $exitBtn.style.display = "block";
-                $headerButtons.style.width = "15%";
+                $accAddress.innerText = getShortAddress(walletAddress);
+                await setBalance();
+                $authButtons.style.display = "none";
+                $accButtons.style.display = "flex";
             }
         }, false);
 
@@ -1028,6 +1186,8 @@
 
             let walletAddress = localStorage.getItem('walletAddress');
             if (walletAddress === null) {
+                $accButtons.style.display = "none";
+                $authButtons.style.display = "flex";
                 showAuthError();
                 return;
             }
@@ -1107,12 +1267,49 @@
 
         $exitBtn.onclick = () => {
             localStorage.removeItem("walletAddress");
-            $loginBtn.style.display = "block";
-            $signUpBtn.style.display = "block";
-            $exitBtn.style.display = "none";
-            $headerButtons.style.width = "30%";
+            $accButtons.style.display = "none";
+            $authButtons.style.display = "flex";
             showAuthError();
         }
+
+        const getShortAddress = () => {
+            let walletAddress = localStorage.getItem('walletAddress');
+            let addressLength = walletAddress.length;
+            return `${walletAddress.slice(0,4)}...${walletAddress.slice(addressLength - 4, addressLength)}`
+        }
+
+        const setBalance = async () => {
+            try {
+                let address = localStorage.getItem('walletAddress');
+                let result = await postData(`${API_URL}/wallet/getBalance`, {address});
+                let items = (await result.json())['BALACNES'];
+                items.forEach(item => {
+                    listItem = document.createElement('li');
+                    listItem.innerHTML = `${item.balance} ${item.token}`;
+                    $tokensListElement.appendChild(listItem);
+                })
+            } catch (e) {
+                console.log(e)
+            }
+        }
+
+        $copyIcon.onclick = async() => {
+            let copyText = localStorage.getItem('walletAddress');
+            await navigator.clipboard.writeText(copyText)
+            $copyMessage.style.opacity = "1";
+            setTimeout(() => {
+                $copyMessage.style.opacity = "0";
+            }, 1000)
+        }
+
+        $accButton.onclick = () => {
+            if ($accountWrapper.style.visibility === "" || $accountWrapper.style.visibility === "hidden")
+                $accountWrapper.style.visibility = "visible";
+            else
+                $accountWrapper.style.visibility = "hidden";
+        }
+
+
 
     })
 </script>
