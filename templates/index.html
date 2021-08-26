@@ -822,7 +822,7 @@
 
             data.forEach( element => {
                 let direction = element.direction;
-                if (direction === 'uni') orderBookData.asks.push({price: element.price, amount: element.amount});
+                if (direction === 'zsh') orderBookData.asks.push({price: element.price, amount: element.amount});
                 if (direction === 'usdt') orderBookData.bids.push({price: element.price, amount: element.amount});
             })
 
@@ -901,14 +901,16 @@
                 .then(data => {
                     data.chain.shift();
                     const cdata = data.chain.map(block => {
-                        let prices = block.transactions.filter(transaction => {
-                            return transaction.tradeTxId !== null && transaction.contract === 'uni';
+                        let filteredTransactions = block.transactions.filter(transaction => {
+                            return transaction.tradeTxId !== null && transaction.contract === 'zsh';
                         })
-                        prices = prices.map(transaction => {
+                        prices = filteredTransactions.map(transaction => {
                             return transaction.price;
                         })
-                        console.log(prices);
-                        return {time: new Date(block.timestamp*1000).getTime(), prices: prices}
+                        volume = filteredTransactions.map(transaction => {
+                            return transaction.sendAmount;
+                        })
+                        return {time: new Date(block.timestamp*1000).getTime(), prices: prices, volume: volume}
                     })
 
                     let currentDate = new Date();
@@ -921,10 +923,16 @@
                     let close = lastPrice;
                     let high = null;
                     let low = null;
+                    let totalVolume = null;
                     filteredData.forEach( element => {
                         element.prices.forEach( price => {
                             if (low === null || price < low) low = price;
                             if (high === null || price > high) high = price;
+                        })
+                    })
+                    filteredData.forEach( element => {
+                        element.volume.forEach( v => {
+                            totalVolume += v;
                         })
                     })
                     currentDate.setHours(0);
@@ -933,6 +941,8 @@
                     currentDate.setMilliseconds(0);
                     let currentData = {time:currentDate.getTime()/1000,open:open,high:high,low:low,close:close};
                     candleSeries.update(currentData);
+                    let currentDataVolume = {time: currentDate.getTime()/1000, value: totalVolume};
+                    volumeSeries.update(currentDataVolume);
                 })
                 .catch(err => console.log(err))
         }

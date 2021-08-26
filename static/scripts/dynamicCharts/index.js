@@ -2,7 +2,7 @@ const chartContainer = document.getElementById('chartContainer');
 let width = chartContainer.width;
 let height = chartContainer.height;
 
-const chartProperties = {
+const candleSeriesProperties = {
     width: width,
     height: height,
     layout: {
@@ -25,12 +25,18 @@ const chartProperties = {
     rightPriceScale: {
         borderColor: 'rgba(0, 0, 0, 0.05)',
     },
+    // timeScale: {
+    //     borderColor: 'rgba(0, 0, 0, 0.05)',
+    // },
     timeScale: {
-        borderColor: 'rgba(0, 0, 0, 0.05)',
+        tickMarkFormatter: (time) => {
+            const date = new Date(time*1000);
+            return date.getMonth() + 1 + '/' + (date.getDate() - 1); //начало временного интервала (типа)
+        },
     },
 }
 
-const chart = LightweightCharts.createChart(chartContainer,chartProperties);
+const chart = LightweightCharts.createChart(chartContainer,candleSeriesProperties);
 const candleSeries = chart.addCandlestickSeries({
     // upColor: '#A9D8B8',
     // downColor: '#FE938C',
@@ -55,8 +61,7 @@ const candleSeries = chart.addCandlestickSeries({
 });
 
 const volumeSeries = chart.addHistogramSeries({
-    upColor: 'yellow',
-    downColor: 'green',
+    color: 'rgba(130,153,254,0.5)',
     priceFormat: {
         type: 'volume',
     },
@@ -66,22 +71,6 @@ const volumeSeries = chart.addHistogramSeries({
         bottom: 0,
     },
 });
-
-volumeSeries.setData([
-    { time: '2018-10-19', value: 54.90 },
-    { time: '2018-10-22', value: 54.98 },
-    { time: '2018-10-23', value: 57.21 },
-    { time: '2018-10-24', value: 57.42 },
-    { time: '2018-10-25', value: 56.43 },
-    { time: '2018-10-26', value: 55.51 },
-    { time: '2018-10-29', value: 56.48 },
-    { time: '2018-10-30', value: 58.18 },
-    { time: '2018-10-31', value: 57.09 },
-    { time: '2018-11-01', value: 56.05 },
-    { time: '2018-11-02', value: 56.63 },
-    { time: '2018-11-05', value: 57.21 },
-    { time: '2018-11-06', value: 57.21 },
-    { time: '2018-11-07', value: 57.65 }])
 
 const toolTipWidth = 60; //100
 const toolTipHeight = 80; //80
@@ -99,9 +88,11 @@ chart.subscribeCrosshairMove(param => {
 
     toolTip.style.display = 'block';
     let prices = param.seriesPrices.get(candleSeries);
+    let volume = param.seriesPrices.get(volumeSeries);
     toolTip.innerHTML = '<div style="color: #4C5C97"><div class="tool-tip-content">' + 'O: ' + prices.open +
         '</div><div class="tool-tip-content">' + 'H: ' + prices.high + '</div><div class="tool-tip-content">' +
-        'L: ' + prices.low + '</div><div class="tool-tip-content">' + 'C: ' + prices.close + '</div>' + '</div>';
+        'L: ' + prices.low + '</div><div class="tool-tip-content">' + 'C: ' + prices.close + '</div>' +
+        '<div class="tool-tip-content">' + 'V: ' + volume + '</div>' +'</div>';
 
     let left = param.point.x + toolTipMargin;
 
