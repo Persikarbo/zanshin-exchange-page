@@ -14,8 +14,7 @@
         }
 
         body {
-            background: url(images/background-image-2-3.png) top right no-repeat;
-            background-attachment: fixed;
+            background: url('../static/images/background-image-2-3.png') no-repeat fixed top right;
             background-size: cover;
             padding: 19px 13% 13%;
             height: 100%; overflow: hidden;
@@ -25,9 +24,43 @@
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-self: stretch;
             margin-bottom: 30px;
+        }
+
+        #header-buttons {
+            display: flex;
+            flex-direction: row;
+            /*justify-content: space-between;*/
+            width: 30%;
+        }
+
+        #header-buttons a {
+            font-family: "Open Sans";
+            font-size: var(--base-font-size);
+            color: white;
+            text-decoration: none;
+        }
+
+        #login-btn {
+            width: 40%;
+            text-align: center;
+            border-right: 2px solid #FFFFFF;
+        }
+
+        #signup-btn {
+            text-align: center;
+            width: 60%;
+        }
+
+        #exit-btn {
+            font-family: "Open Sans";
+            font-size: var(--base-font-size);
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            display: none;
         }
 
         #content {
@@ -417,13 +450,49 @@
             text-align: right;
         }
 
+        .link {
+            font-family: Open Sans;
+            line-height: 22px;
+            color: #8299FE;
+            font-size: var(--base-font-size);
+            text-decoration: none;
+        }
+
+        #btn-text2 {
+            font-family: Open Sans;
+            font-size: var(--base-font-size);
+            line-height: 20px;
+            color: #FFFFFF;
+        }
+
+        #auth-error {
+            display: none;
+            position: static;
+            height: var(--base-height);
+            border: none;
+            background: var(--primary-color);
+            border-radius: 15px;
+            flex: none;
+            order: 0;
+            flex-grow: 0;
+            /*display: flex;*/
+            align-items: center;
+            justify-content: center;
+        }
+
     </style>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
           rel="stylesheet">
 </head>
 <body>
 <div id="header">
-    <a href=""><img src="images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
+    <a href=""><img src="../static/images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
+    <div id="header-buttons">
+        <div id="login-btn"><a href="login.html">Вход</a></div>
+        <div id="signup-btn"><a href="sign_up.html">Регистрация</a></div>
+        <div id="exit-btn">Выход</div>
+    </div>
+
 </div>
 <div style="display: flex; flex-direction: row;">
     <div style="display: flex; flex-direction: column; width: 68%;">
@@ -465,6 +534,13 @@
                         <div id="loader"></div>
                         <div id="btn-text">Купить BTC</div>
                     </button>
+                    <div id="auth-error">
+                        <div>
+                            <a href="login.html" class="link">Войдите</a>
+                            <span id="btn-text2"> или </span>
+                            <a href="sign_up.html" class="link">Зарегистрируйтесь</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -498,13 +574,13 @@
 </div>
 </body>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-<script type="text/javascript" src="staticCharts/index.js"></script>
+<script type="text/javascript" src="../static/scripts/dynamicCharts/index.js"></script>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
     $(function () {
         const $switchButton = document.getElementById('switch');
         const $btnText = document.getElementById('btn-text');
+        const $btn = document.getElementById('btn');
         const $priceInput = document.getElementById('price-input');
         const $amountInput = document.getElementById('amount-input');
         const $totalPrice = document.getElementById('total-price');
@@ -520,11 +596,26 @@
         const $tableAmountCol2 = document.getElementById('table-amount-col-2');
         const $asksTable = document.getElementById('asks-table');
         const $bidsTable = document.getElementById('bids-table');
+        const $loader = document.getElementById('loader');
+        const $authError = document.getElementById('auth-error');
+        const $loginBtn =  document.getElementById('login-btn');
+        const $signUpBtn = document.getElementById('signup-btn');
+        const $exitBtn = document.getElementById('exit-btn');
+        const $headerButtons = document.getElementById('header-buttons');
+
+        const API_URL = 'http://178.176.120.241:5000';
+        //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
+        const TRADE_DIRECTIONS = {SELL: 'SELL', BUY: 'BUY'};
+        let tradeDirection = TRADE_DIRECTIONS.BUY;
+
+        const $primaryColor="#4C5C97"
+        const $error = "#E27B7B";
 
         const cryptocurrencyPairs = ['BTC/USDT', 'BTC/DAI', 'ETH/USDT', 'ETH/DAI', 'BNB/USDT', 'BNB/DAI', 'DOT/USDT',
             'DOT/DAI', 'UNI/USDT', 'UNI/DAI', 'BTC/ETH', 'ETH/UNI', 'BTC/DOT', 'ETH/DOT']
 
         const defaultCryptocurrencyPair = 'BTC/USDT';
+        let currentCryptocurrencyPair = defaultCryptocurrencyPair;
         let firstCryptocurrency = defaultCryptocurrencyPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
         let secondCryptocurrency = defaultCryptocurrencyPair.substring(defaultCryptocurrencyPair.indexOf('/') + 1,
             defaultCryptocurrencyPair.length);
@@ -533,18 +624,32 @@
             makeList();
             makeTable($asksTable);
             makeTable($bidsTable);
-            setChartData();
+            // setChartData();
+            if (localStorage.getItem('walletAddress') === null) {
+                showAuthError();
+            } else {
+                $loginBtn.style.display = "none";
+                $signUpBtn.style.display = "none";
+                $exitBtn.style.display = "block";
+                $headerButtons.style.width = "15%";
+            }
         }, false);
 
         $switchButton.onclick = () => {
-            if ($('#switch').prop('checked')) $btnText.innerText = `Продать ${firstCryptocurrency}`;
-            else $btnText.innerText = `Купить ${firstCryptocurrency}`;
+            if ($('#switch').prop('checked')) {
+                $btnText.innerText = `Продать ${firstCryptocurrency}`;
+                tradeDirection = TRADE_DIRECTIONS.SELL;
+            }
+            else {
+                $btnText.innerText = `Купить ${firstCryptocurrency}`;
+                tradeDirection = TRADE_DIRECTIONS.BUY;
+            }
         }
 
         const decimals = 6;
 
         $priceInput.oninput = () => {
-
+            returnOldButton();
             $priceInput.value = Math.round(Number($priceInput.value) * 10**(decimals)) / 10**(decimals);
             let price = Number($priceInput.value);
             let amount = Number ($amountInput.value);
@@ -553,6 +658,7 @@
         }
 
         $amountInput.oninput = () => {
+            returnOldButton();
             $amountInput.value = Math.round(parseFloat($amountInput.value) * 10**(decimals)) / 10**(decimals);
             let price = Number($priceInput.value);
             let amount = Number ($amountInput.value);
@@ -596,6 +702,7 @@
 
         const setCryptocurrency = (currentPair) => {
             $currentPairLabel.innerText = currentPair;
+            currentCryptocurrencyPair = currentPair;
             firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
             secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
                 currentPair.length);
@@ -606,6 +713,12 @@
             $secondCryptocurrencyLabel.innerText = secondCryptocurrency;
             $firstCryptocurrencyLabel.innerText = firstCryptocurrency;
             $totalCryptocurrencyLabel.innerText = secondCryptocurrency;
+
+            $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
+            $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
+            $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
+            $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
+
             setChartData();
         }
 
@@ -613,7 +726,7 @@
             let target = getEventTarget(event).innerText;
             if (target.length < 10) setCryptocurrency(target);
             clearInterval(refreshOrderBook);
-            refreshOrderBook = setInterval(orderBook, 1000);
+            refreshOrderBook = setInterval(orderBook, 5000);
         }
 
         const orderBookLimit = 10;
@@ -634,75 +747,299 @@
             }
         }
 
-        const orderBook = () => {
-            let request = new XMLHttpRequest();
-            request.open('GET','https://api.binance.com/api/v1/depth?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&limit=' + orderBookLimit,true);
-            request.onload = () => {
-                let orderBookData = JSON.parse(request.responseText);
+        // const orderBook = () => {
+        //     let request = new XMLHttpRequest();
+        //     request.open('GET','https://api.binance.com/api/v1/depth?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&limit=' + orderBookLimit,true);
+        //     request.onload = () => {
+        //         let orderBookData = JSON.parse(request.responseText);
+        //
+        //         for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
+        //             let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
+        //             cols[0].innerText = (parseFloat(orderBookData.asks[i][0])).toFixed(decimals);
+        //             cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
+        //             cols[0].style.borderRadius = '10px';
+        //             cols[0].style.textAlign = 'center';
+        //             cols[0].style.color = '#fff';
+        //             cols[1].innerText = (parseFloat(orderBookData.asks[i][1])).toFixed(decimals);
+        //             cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+        //         }
+        //
+        //         for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
+        //             let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
+        //             cols[0].innerText = (parseFloat(orderBookData.bids[i][0])).toFixed(decimals);
+        //             cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
+        //             cols[0].style.borderRadius = '10px';
+        //             cols[0].style.textAlign = 'center';
+        //             cols[0].style.color = '#fff';
+        //             cols[1].innerText = (parseFloat(orderBookData.bids[i][1])).toFixed(decimals);
+        //             cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+        //         }
+        //     }
+        //
+        //     request.send();
+        //
+        //     let currentPair = $currentPairLabel.innerText;
+        //     firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
+        //     secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
+        //         currentPair.length);
+        //     $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
+        //     $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
+        //     $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
+        //     $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
+        //
+        // }
 
-                for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
-                    let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
-                    cols[0].innerText = (parseFloat(orderBookData.asks[i][0])).toFixed(decimals);
-                    cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
-                    cols[0].style.borderRadius = '10px';
-                    cols[0].style.textAlign = 'center';
-                    cols[0].style.color = '#fff';
-                    cols[1].innerText = (parseFloat(orderBookData.asks[i][1])).toFixed(decimals);
-                    cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
-                }
+        let orderBookData = {
+            asks: [],
+            bids: [],
+        }
 
-                for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
-                    let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
-                    cols[0].innerText = (parseFloat(orderBookData.bids[i][0])).toFixed(decimals);
-                    cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
-                    cols[0].style.borderRadius = '10px';
-                    cols[0].style.textAlign = 'center';
-                    cols[0].style.color = '#fff';
-                    cols[1].innerText = (parseFloat(orderBookData.bids[i][1])).toFixed(decimals);
-                    cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
-                }
+        const descendingOrder = ( a, b ) => {
+            if ( a.price > b.price ){
+                return -1;
+            }
+            if ( a.price < b.price ){
+                return 1;
+            }
+            return 0;
+        }
+
+        const ascendingOrder = ( a, b ) => {
+            if ( a.price < b.price ){
+                return -1;
+            }
+            if ( a.price > b.price ){
+                return 1;
+            }
+            return 0;
+        }
+
+        const parseAndSortData = (data) => {
+            orderBookData = {
+                asks: [],
+                bids: [],
             }
 
-            request.send();
+            data.forEach( element => {
+                let direction = element.direction;
+                if (direction === 'uni') orderBookData.asks.push({price: element.price, amount: element.amount});
+                if (direction === 'usdt') orderBookData.bids.push({price: element.price, amount: element.amount});
+            })
 
-            let currentPair = $currentPairLabel.innerText;
-            firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
-            secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
-                currentPair.length);
-            $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
-            $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
-            $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
-            $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
+            orderBookData.asks.sort( descendingOrder );
+            orderBookData.bids.sort ( ascendingOrder );
 
         }
 
-        const setChartData = () => {
-            fetch('https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1000')
+        const orderBook = () => {
+            fetch(`${API_URL}/getTradeOrders`)
                 .then(res => res.json())
-                        .then(data => {
-                            const cdata = data.map(d => {
-                                return {time:d[0]/1000,open:parseFloat(d[1]),high:parseFloat(d[2]),low:parseFloat(d[3]),close:parseFloat(d[4])}
-                            });
-                            candleSeries.setData(cdata);
-                        })
-                        .catch(err => console.log(err))
-            }
+                .then(data => {
+                    const obdata = data.tradeOrders.map(d => {
+                        return {price:d.price, direction: d.send, amount: d.sendVol}
+                    });
+                    // limit
+                    // obdate = obdata.slice(3, obdata.length)
+                    parseAndSortData(obdata);
+
+                    for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
+                        let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
+                        if (orderBookData.asks[i] !== undefined && i < orderBookData.asks.length) {
+                            cols[0].innerText = orderBookData.asks[i].price.toFixed(decimals);
+                            cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
+                            cols[0].style.borderRadius = '10px';
+                            cols[0].style.textAlign = 'center';
+                            cols[0].style.color = '#fff';
+                            cols[1].innerText = orderBookData.asks[i].amount.toFixed(decimals);
+                            cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+                        }
+                    }
+
+                    for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
+                        let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
+                        if (orderBookData.bids[i] !== undefined && i < orderBookData.bids.length) {
+                            cols[0].innerText = orderBookData.bids[i].price.toFixed(decimals);
+                            cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
+                            cols[0].style.borderRadius = '10px';
+                            cols[0].style.textAlign = 'center';
+                            cols[0].style.color = '#fff';
+                            cols[1].innerText = orderBookData.bids[i].amount.toFixed(decimals);
+                            cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+                        }
+                    }
+                })
+                .catch(err => console.log(err))
+        }
+
+        // const setChartData = () => {
+        //     fetch('https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1000')
+        //         .then(res => res.json())
+        //                 .then(data => {
+        //                     const cdata = data.map(d => {
+        //                         return {time:d[0]/1000,open:parseFloat(d[1]),high:parseFloat(d[2]),low:parseFloat(d[3]),close:parseFloat(d[4])}
+        //                     });
+        //                     candleSeries.setData(cdata);
+        //                 })
+        //                 .catch(err => console.log(err))
+        //     }
+
+        // const updateChartData = () => {
+        //     let request = new XMLHttpRequest();
+        //     request.open('GET','https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1',true);
+        //     request.onload = () => {
+        //         let chartData = JSON.parse(request.responseText);
+        //         let currentData = {time:chartData[0][0]/1000,open:parseFloat(chartData[0][1]),high:parseFloat(chartData[0][2]),low:parseFloat(chartData[0][3]),close:parseFloat(chartData[0][4])};
+        //         candleSeries.update(currentData);
+        //         }
+        //
+        //     request.send();
+        // }
 
         const updateChartData = () => {
-            let request = new XMLHttpRequest();
-            request.open('GET','https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1',true);
-            request.onload = () => {
-                let chartData = JSON.parse(request.responseText);
-                let currentData = {time:chartData[0][0]/1000,open:parseFloat(chartData[0][1]),high:parseFloat(chartData[0][2]),low:parseFloat(chartData[0][3]),close:parseFloat(chartData[0][4])};
-                console.log(candleSeries);
-                candleSeries.update(currentData);
-                }
+            fetch(`${API_URL}/chain`)
+                .then(res => res.json())
+                .then(data => {
+                    data.chain.shift();
+                    const cdata = data.chain.map(block => {
+                        let prices = block.transactions.filter(transaction => {
+                            return transaction.tradeTxId !== null && transaction.contract === 'uni';
+                        })
+                        prices = prices.map(transaction => {
+                            return transaction.price;
+                        })
+                        console.log(prices);
+                        return {time: new Date(block.timestamp*1000).getTime(), prices: prices}
+                    })
 
-            request.send();
+                    let currentDate = new Date();
+                    let chartIntervalStart = new Date();
+                    chartIntervalStart.setDate(currentDate.getDate() - 1); // One day interval
+                    let filteredData = cdata.filter(element => element.time > chartIntervalStart.getTime())
+                    let open = filteredData[0].prices[0];
+                    let lastTransaction = filteredData[filteredData.length - 1];
+                    let lastPrice = lastTransaction.prices[lastTransaction.prices.length - 1];
+                    let close = lastPrice;
+                    let high = null;
+                    let low = null;
+                    filteredData.forEach( element => {
+                        element.prices.forEach( price => {
+                            if (low === null || price < low) low = price;
+                            if (high === null || price > high) high = price;
+                        })
+                    })
+                    currentDate.setHours(0);
+                    currentDate.setMinutes(0);
+                    currentDate.setSeconds(0);
+                    currentDate.setMilliseconds(0);
+                    let currentData = {time:currentDate.getTime()/1000,open:open,high:high,low:low,close:close};
+                    candleSeries.update(currentData);
+                })
+                .catch(err => console.log(err))
         }
 
-        let refreshChart = setInterval(updateChartData, 1000);
-        let refreshOrderBook = setInterval(orderBook,1000);
+        let refreshChart = setInterval(updateChartData, 5000);
+        let refreshOrderBook = setInterval(orderBook,5000);
+
+        $btn.onclick = async () => {
+            const price = parseFloat($priceInput.value);
+            const amount = parseFloat($amountInput.value);
+
+            if (price === 0 || isNaN(price)) {
+                setMessageToButton("Введите цену", $error);
+                return;
+            }
+            if (amount === 0 || isNaN(amount)) {
+                setMessageToButton("Введите количество", $error);
+                return;
+            }
+            //getVol == price*sendVol  sell
+            //getVol == sendVol/price buy
+
+            //send 0 get 1 sell
+            //send 1 get 0 buy
+            const currentSymbols = currentCryptocurrencyPair.toLowerCase()
+            const symbolsArray = currentSymbols.split('/')
+
+            let walletAddress = localStorage.getItem('walletAddress');
+            if (walletAddress === null) {
+                showAuthError();
+                return;
+            }
+            tx = {
+                'type': 'trade',
+                'sender': walletAddress,
+                'symbol': currentSymbols,
+                price,
+                'send': tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[1] : symbolsArray[0],
+                'sendVol': amount,
+                'get': tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[0] : symbolsArray[1],
+                'getVol': tradeDirection === TRADE_DIRECTIONS.BUY ? amount/price : price * amount,
+                'comissionAmount':2
+            }
+            console.log(tx);
+            try {
+                showLoader();
+                let result = await postData(`${API_URL}/transactions/new`, tx);
+                hideLoader();
+
+                let data = await result.json();
+                console.log(await result.json());
+                if (data.MSG && data.MSG.includes("Try to sign in first")) {
+                    showAuthError();
+                }
+            } catch (e) {
+                hideLoader();
+                setMessageToButton("Попробуйте позже", $error);
+            }
+
+        }
+
+        const postData = async (url = '', data = {}) => {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+            return await response;
+        }
+
+        const showLoader = () => {
+            $btnText.style.display = "none";
+            $btn.style.pointerEvents = "none";
+            $loader.style.display = "block";
+        }
+
+        const hideLoader = () => {
+            $btn.style.background = $primaryColor;
+            $loader.style.display = "none";
+            $btnText.style.display = "block";
+        }
+
+        const setMessageToButton = (message, backgroundColor = $primaryColor) => {
+            $btn.style.background = backgroundColor;
+            $btn.style.pointerEvents = "none";
+            $btnText.innerText = message;
+        }
+
+        const showAuthError = () => {
+            $btn.style.pointerEvents = "none";
+            $btn.style.display = "none";
+            $authError.style.display = "flex";
+        }
+
+        const returnOldButton = () => {
+            $btn.style.pointerEvents = "auto";
+            $btn.style.removeProperty("background");
+            $btnText.innerText = tradeDirection === TRADE_DIRECTIONS.SELL ? `Продать ${firstCryptocurrency}` : `Купить ${firstCryptocurrency}` ;
+        }
+
+        $exitBtn.onclick = () => {
+            localStorage.removeItem("walletAddress");
+            $loginBtn.style.display = "block";
+            $signUpBtn.style.display = "block";
+            $exitBtn.style.display = "none";
+            $headerButtons.style.width = "30%";
+            showAuthError();
+        }
 
     })
 </script>
