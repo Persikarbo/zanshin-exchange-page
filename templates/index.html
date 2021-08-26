@@ -560,7 +560,7 @@
             makeList();
             makeTable($asksTable);
             makeTable($bidsTable);
-            setChartData();
+            // setChartData();
         }, false);
 
         $switchButton.onclick = () => {
@@ -646,7 +646,7 @@
             let target = getEventTarget(event).innerText;
             if (target.length < 10) setCryptocurrency(target);
             clearInterval(refreshOrderBook);
-            refreshOrderBook = setInterval(orderBook, 1000);
+            refreshOrderBook = setInterval(orderBook, 5000);
         }
 
         const orderBookLimit = 10;
@@ -714,7 +714,27 @@
             bids: [],
         }
 
-        const parseData = (data) => {
+        const descendingOrder = ( a, b ) => {
+            if ( a.price > b.price ){
+                return -1;
+            }
+            if ( a.price < b.price ){
+                return 1;
+            }
+            return 0;
+        }
+
+        const ascendingOrder = ( a, b ) => {
+            if ( a.price < b.price ){
+                return -1;
+            }
+            if ( a.price > b.price ){
+                return 1;
+            }
+            return 0;
+        }
+
+        const parseAndSortData = (data) => {
             orderBookData = {
                 asks: [],
                 bids: [],
@@ -725,6 +745,10 @@
                 if (direction === 'uni') orderBookData.asks.push({price: element.price, amount: element.amount});
                 if (direction === 'usdt') orderBookData.bids.push({price: element.price, amount: element.amount});
             })
+
+            orderBookData.asks.sort( descendingOrder );
+            orderBookData.bids.sort ( ascendingOrder );
+
         }
 
         const orderBook = () => {
@@ -734,7 +758,9 @@
                     const obdata = data.tradeOrders.map(d => {
                         return {price:d.price, direction: d.send, amount: d.sendVol}
                     });
-                    parseData(obdata);
+                    // limit
+                    // obdate = obdata.slice(3, obdata.length)
+                    parseAndSortData(obdata);
 
                     for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
                         let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
@@ -765,32 +791,74 @@
                 .catch(err => console.log(err))
         }
 
-        const setChartData = () => {
-            fetch('https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1000')
-                .then(res => res.json())
-                        .then(data => {
-                            const cdata = data.map(d => {
-                                return {time:d[0]/1000,open:parseFloat(d[1]),high:parseFloat(d[2]),low:parseFloat(d[3]),close:parseFloat(d[4])}
-                            });
-                            candleSeries.setData(cdata);
-                        })
-                        .catch(err => console.log(err))
-            }
+        // const setChartData = () => {
+        //     fetch('https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1000')
+        //         .then(res => res.json())
+        //                 .then(data => {
+        //                     const cdata = data.map(d => {
+        //                         return {time:d[0]/1000,open:parseFloat(d[1]),high:parseFloat(d[2]),low:parseFloat(d[3]),close:parseFloat(d[4])}
+        //                     });
+        //                     candleSeries.setData(cdata);
+        //                 })
+        //                 .catch(err => console.log(err))
+        //     }
+
+        // const updateChartData = () => {
+        //     let request = new XMLHttpRequest();
+        //     request.open('GET','https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1',true);
+        //     request.onload = () => {
+        //         let chartData = JSON.parse(request.responseText);
+        //         let currentData = {time:chartData[0][0]/1000,open:parseFloat(chartData[0][1]),high:parseFloat(chartData[0][2]),low:parseFloat(chartData[0][3]),close:parseFloat(chartData[0][4])};
+        //         candleSeries.update(currentData);
+        //         }
+        //
+        //     request.send();
+        // }
 
         const updateChartData = () => {
-            let request = new XMLHttpRequest();
-            request.open('GET','https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1',true);
-            request.onload = () => {
-                let chartData = JSON.parse(request.responseText);
-                let currentData = {time:chartData[0][0]/1000,open:parseFloat(chartData[0][1]),high:parseFloat(chartData[0][2]),low:parseFloat(chartData[0][3]),close:parseFloat(chartData[0][4])};
-                candleSeries.update(currentData);
-                }
+            fetch('http://178.176.120.241:5000/chain')
+                .then(res => res.json())
+                .then(data => {
+                    data.chain.shift();
+                    const cdata = data.chain.map(block => {
+                        let prices = block.transactions.filter(transaction => {
+                            return transaction.tradeTxId !== null && transaction.contract === 'uni';
+                        })
+                        prices = prices.map(transaction => {
+                            return transaction.price;
+                        })
+                        console.log(prices);
+                        return {time: new Date(block.timestamp*1000).getTime(), prices: prices}
+                    })
 
-            request.send();
+                    let currentDate = new Date();
+                    let chartIntervalStart = new Date();
+                    chartIntervalStart.setDate(currentDate.getDate() - 1); // One day interval
+                    let filteredData = cdata.filter(element => element.time > chartIntervalStart.getTime())
+                    let open = filteredData[0].prices[0];
+                    let lastTransaction = filteredData[filteredData.length - 1];
+                    let lastPrice = lastTransaction.prices[lastTransaction.prices.length - 1];
+                    let close = lastPrice;
+                    let high = null;
+                    let low = null;
+                    filteredData.forEach( element => {
+                        element.prices.forEach( price => {
+                            if (low === null || price < low) low = price;
+                            if (high === null || price > high) high = price;
+                        })
+                    })
+                    currentDate.setHours(0);
+                    currentDate.setMinutes(0);
+                    currentDate.setSeconds(0);
+                    currentDate.setMilliseconds(0);
+                    let currentData = {time:currentDate.getTime()/1000,open:open,high:high,low:low,close:close};
+                    candleSeries.update(currentData);
+                })
+                .catch(err => console.log(err))
         }
 
-        let refreshChart = setInterval(updateChartData, 1000);
-        let refreshOrderBook = setInterval(orderBook,1000);
+        let refreshChart = setInterval(updateChartData, 5000);
+        let refreshOrderBook = setInterval(orderBook,5000);
 
     })
 </script>
