@@ -480,7 +480,12 @@
             justify-content: center;
         }
 
-    </style>
+        #total-and-btn-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+</style>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
           rel="stylesheet">
 </head>
@@ -524,21 +529,23 @@
                     <div class="cryptocurrency-name" id="first-cryptocurrency">BTC</div>
                 </div>
                 <div id="horizontal-line"></div>
-                <div class="field-wrapper">
-                    <div class="field-name">Всего</div>
-                    <div id="total-price"></div>
-                    <div class="cryptocurrency-name" id="total-cryptocurrency">USDT</div>
-                </div>
-                <div id="btn-wrapper">
-                    <button id="btn">
-                        <div id="loader"></div>
-                        <div id="btn-text">Купить BTC</div>
-                    </button>
-                    <div id="auth-error">
-                        <div>
-                            <a href="login.html" class="link">Войдите</a>
-                            <span id="btn-text2"> или </span>
-                            <a href="sign_up.html" class="link">Зарегистрируйтесь</a>
+                <div id="total-and-btn-wrapper">
+                    <div class="field-wrapper" id="total-price-field">
+                        <div class="field-name">Всего</div>
+                        <div id="total-price"></div>
+                        <div class="cryptocurrency-name" id="total-cryptocurrency">USDT</div>
+                    </div>
+                    <div id="btn-wrapper">
+                        <button id="btn">
+                            <div id="loader"></div>
+                            <div id="btn-text">Купить BTC</div>
+                        </button>
+                        <div id="auth-error">
+                            <div>
+                                <a href="login.html" class="link">Войдите</a>
+                                <span id="btn-text2"> или </span>
+                                <a href="sign_up.html" class="link">Зарегистрируйтесь</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -602,6 +609,8 @@
         const $signUpBtn = document.getElementById('signup-btn');
         const $exitBtn = document.getElementById('exit-btn');
         const $headerButtons = document.getElementById('header-buttons');
+        const $totalAndBtnWrapper = document.getElementById('total-and-btn-wrapper');
+        const $totalPriceField = document.getElementById('total-price-field');
 
         const API_URL = 'http://178.176.120.241:5000';
         //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
@@ -610,6 +619,7 @@
 
         const $primaryColor="#4C5C97"
         const $error = "#E27B7B";
+        const $success = "#9FAF90";
 
         const cryptocurrencyPairs = ['BTC/USDT', 'BTC/DAI', 'ETH/USDT', 'ETH/DAI', 'BNB/USDT', 'BNB/DAI', 'DOT/USDT',
             'DOT/DAI', 'UNI/USDT', 'UNI/DAI', 'BTC/ETH', 'ETH/UNI', 'BTC/DOT', 'ETH/DOT']
@@ -996,6 +1006,10 @@
                 console.log(await result.json());
                 if (data.MSG && data.MSG.includes("Try to sign in first")) {
                     showAuthError();
+                } else if (data.MSG && data.MSG.includes("Tx pool synced among")) {
+                    setMessageToButton("Заявка отправлена", $success);
+                    $priceInput.value = NaN;
+                    $amountInput.value = Nan;
                 }
             } catch (e) {
                 hideLoader();
@@ -1031,6 +1045,9 @@
         }
 
         const showAuthError = () => {
+            $totalPriceField.style.display = "none";
+            $totalAndBtnWrapper.style.height = "100px";
+            $totalAndBtnWrapper.style.justifyContent = "center";
             $btn.style.pointerEvents = "none";
             $btn.style.display = "none";
             $authError.style.display = "flex";
