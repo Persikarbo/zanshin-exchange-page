@@ -288,7 +288,7 @@
                     if (result.MSG !== true && result.MSG.includes("Wrong password"))
                         setMessageToButton("Неправильный пароль", $error);
                     else {
-                        setMessageToButton("Успех", $success);
+                        setMessageToButton("", $success);
                         localStorage.setItem('walletAddress', result.ADDRESS);
                         document.location.href = "index.html";
                     }

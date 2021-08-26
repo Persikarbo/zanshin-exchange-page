@@ -32,7 +32,7 @@
         .header-buttons {
             display: flex;
             flex-direction: row;
-            /*justify-content: space-between;*/
+            justify-content: flex-end;
             width: 30%;
         }
 
@@ -62,27 +62,34 @@
         /*}*/
 
         .first-btn {
-            width: 50%;
+            padding-right: 20%;
             text-align: center;
             border-right: 2px solid #FFFFFF;
         }
 
         .second-btn {
+            padding-left: 20%;
             text-align: center;
-            width: 50%;
+        }
+
+        #acc-btn {
+            padding: 10px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color .2s;
         }
 
         #triangle{
             width: 0;
             height: 0;
-            margin-left: 23%;
+            margin-left: 27%;
             border-style: solid;
             border-width: 0 10px 10px 10px;
             border-color: transparent transparent #F2F8FF transparent;
         }
 
         #account-wrapper {
-            visibility: hidden;
+            opacity: 0;
+            transition: opacity .2s;
             width: 100%;
             position: relative;
             display: flex;
@@ -92,7 +99,6 @@
         }
 
         #account-window-with-triangle{
-            /*display: none;*/
             margin-top: -10px;
             display: flex;
             flex-direction: column;
@@ -154,7 +160,7 @@
 
         #copy-message-with-triangle {
             opacity: 0;
-            transition: opacity 0.1s;
+            transition: opacity 0.5s;
             display: flex;
             flex-direction: column;
             position: absolute;
@@ -663,7 +669,7 @@
         <div class="first-btn" ><a href="login.html">Вход</a></div>
         <div class="second-btn"><a href="sign_up.html">Регистрация</a></div>
     </div>
-    <div class="header-buttons" id="acc-buttons">
+    <div class="header-buttons" id="acc-buttons" style="display: none;">
         <div class="first-btn" ><a id="acc-btn">Мой аккаунт</a></div>
         <div class="second-btn"><a id="exit-btn">Выход</a></div>
     </div>
@@ -694,7 +700,7 @@
         </div>
     </div>
 </div>
-<div style="display: flex; flex-direction: row; width: 100%;">
+<div id="main-wrapper" style="display: flex; flex-direction: row; width: 100%;">
     <div style="display: flex; flex-direction: column; width: 68%;">
         <div id="chartContainer"><div class="floating-tooltip-2" id="tool-tip"></div></div>
         <div id="content">
@@ -849,6 +855,15 @@
                 $accButtons.style.display = "flex";
             }
         }, false);
+
+        window.addEventListener("mousedown", async function (event){
+            let $accountWindow = document.getElementById('account-window-with-triangle');
+            if(event.target !== $accountWindow && !$accountWindow.contains(event.target) && $accountWrapper.style.opacity === "1")
+            {
+                $accountWrapper.style.opacity = "0";
+                $accButton.style.borderBottomColor = 'transparent';
+            }
+        })
 
         $switchButton.onclick = () => {
             if ($('#switch').prop('checked')) {
@@ -1304,10 +1319,10 @@
         }
 
         $accButton.onclick = () => {
-            if ($accountWrapper.style.visibility === "" || $accountWrapper.style.visibility === "hidden")
-                $accountWrapper.style.visibility = "visible";
-            else
-                $accountWrapper.style.visibility = "hidden";
+            $accButton.style.borderBottomColor = 'white';
+            if ($accountWrapper.style.opacity === "" || $accountWrapper.style.opacity === "0")
+                $accountWrapper.style.opacity = "1.0";
+            else $accountWrapper.style.opacity = "0";
         }
 
 
