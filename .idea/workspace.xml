@@ -30,11 +30,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: volume chart">
+    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: add account window">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sign_up.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sign_up.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,6 +100,7 @@
       <workItem from="1629782217537" duration="6568000" />
       <workItem from="1629868433232" duration="25870000" />
       <workItem from="1629959906442" duration="4948000" />
+      <workItem from="1629991760372" duration="786000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1629703298500</created>
@@ -159,7 +158,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629973206815</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="feat: add account window">
+      <created>1629982210493</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1629982210493</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -185,7 +191,8 @@
     <MESSAGE value="fixes 25/08/21" />
     <MESSAGE value="feat: set own data to trading view chart and order book" />
     <MESSAGE value="feat: volume chart" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: volume chart" />
+    <MESSAGE value="feat: add account window" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add account window" />
   </component>
   <component name="WindowStateProjectService">
     <state x="347" y="159" key="#Inspections" timestamp="1629721403086">
@@ -196,10 +203,10 @@
       <screen x="0" y="0" width="1440" height="960" />
     </state>
     <state x="501" y="222" key="FileChooserDialogImpl/0.0.1440.960@0.0.1440.960" timestamp="1629703071392" />
-    <state x="313" y="214" key="Vcs.Push.Dialog.v2" timestamp="1629973224961">
+    <state x="313" y="214" key="Vcs.Push.Dialog.v2" timestamp="1629982230999">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="313" y="214" key="Vcs.Push.Dialog.v2/0.0.1440.960@0.0.1440.960" timestamp="1629973224961" />
+    <state x="313" y="214" key="Vcs.Push.Dialog.v2/0.0.1440.960@0.0.1440.960" timestamp="1629982230999" />
     <state x="93" y="93" width="1255" height="775" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1629737298859">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
@@ -208,10 +215,10 @@
       <screen x="0" y="0" width="1440" height="960" />
     </state>
     <state x="427" y="215" width="587" height="530" key="find.popup/0.0.1440.960@0.0.1440.960" timestamp="1629962665127" />
-    <state x="377" y="221" key="run.anything.popup" timestamp="1629783184147">
+    <state x="377" y="221" key="run.anything.popup" timestamp="1629991903932">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="377" y="221" key="run.anything.popup/0.0.1440.960@0.0.1440.960" timestamp="1629783184147" />
+    <state x="377" y="221" key="run.anything.popup/0.0.1440.960@0.0.1440.960" timestamp="1629991903932" />
     <state x="383" y="205" width="672" height="678" key="search.everywhere.popup" timestamp="1629895641318">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
