@@ -1242,14 +1242,14 @@
                     else if (data.MSG.includes("Spend amount exceeds account balance"))
                         setMessageToButton("Недостаточно средств", $error);
                     else {
-                        setMessageToButton("Ошибка на сервере. Пожалуйста повторите позже.", $error);
+                        setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
                     }
                 } else {
-                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите позже.", $error);
+                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
                 }
             } catch (e) {
                 hideLoader();
-                setMessageToButton("Попробуйте позже", $error);
+                setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
             }
 
         }
