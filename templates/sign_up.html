@@ -272,17 +272,16 @@
                 let result = await postData(API_URL + "/wallet/new", {password});
                 hideLoader()
                 if (result.status === 200) {
-                    setMessageToButton("", $success);
+                    setMessageToButton("", $main);
                     localStorage.setItem('walletAddress', (await result.json()).ADDRESS);
                     document.location.href = "login.html";
-                    console.log(await result.json());
                 }
                 else {
-                    setMessageToButton("Попробуйте позже", $error);
+                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
                 }
             } catch (e) {
                 hideLoader();
-                setMessageToButton("Попробуйте позже", $error);
+                setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
             }
 
         }

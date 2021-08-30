@@ -272,7 +272,6 @@
         $btn.onclick = async () => {
             try {
                 let password = $passwordInput.value;
-                console.log(password)
                 if (password === '') {
                     setMessageToButton("Введите пароль", $error);
                     return;
@@ -281,21 +280,20 @@
                 let result = await postData(API_URL + "/wallet/login", {password});
                 hideLoader();
                 if (result.status === 500)
-                    setMessageToButton("Попробуйте еще раз", $error);
+                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
                 else {
                     result = await result.json()
-                    console.log(result)
                     if (result.MSG !== true && result.MSG.includes("Wrong password"))
                         setMessageToButton("Неправильный пароль", $error);
                     else {
-                        setMessageToButton("", $success);
+                        setMessageToButton("", $main);
                         localStorage.setItem('walletAddress', result.ADDRESS);
                         document.location.href = "index.html";
                     }
                 }
             } catch (e) {
                 hideLoader();
-                setMessageToButton("Попробуйте позже", $error);
+                setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
             }
 
 
