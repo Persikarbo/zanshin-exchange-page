@@ -23,12 +23,11 @@ const candleSeriesProperties = {
         },
     },
     rightPriceScale: {
+        // autoScale: true,
         borderColor: 'rgba(0, 0, 0, 0.05)',
     },
-    // timeScale: {
-    //     borderColor: 'rgba(0, 0, 0, 0.05)',
-    // },
     timeScale: {
+        borderVisible: false,
         tickMarkFormatter: (time) => {
             const date = new Date(time*1000);
             return date.getMonth() + 1 + '/' + (date.getDate() - 1); //начало временного интервала (типа)
