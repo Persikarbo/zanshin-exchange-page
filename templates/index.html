@@ -834,11 +834,13 @@
         const cryptocurrencyPairs = ['BTC/USDT', 'BTC/DAI', 'ETH/USDT', 'ETH/DAI', 'BNB/USDT', 'BNB/DAI', 'DOT/USDT',
             'DOT/DAI', 'UNI/USDT', 'UNI/DAI', 'BTC/ETH', 'ETH/UNI', 'BTC/DOT', 'ETH/DOT']
 
-        const defaultCryptocurrencyPair = 'BTC/USDT';
+        // const defaultCryptocurrencyPair = 'BTC/USDT';
+        const defaultCryptocurrencyPair = 'ZSH/USDT';
         let currentCryptocurrencyPair = defaultCryptocurrencyPair;
         let firstCryptocurrency = defaultCryptocurrencyPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
         let secondCryptocurrency = defaultCryptocurrencyPair.substring(defaultCryptocurrencyPair.indexOf('/') + 1,
             defaultCryptocurrencyPair.length);
+        let balances = [];
 
         window.addEventListener("load", async function (event) {
             makeList();
@@ -866,6 +868,7 @@
         })
 
         $switchButton.onclick = () => {
+            returnOldButton();
             if ($('#switch').prop('checked')) {
                 $btnText.innerText = `Продать ${firstCryptocurrency}`;
                 tradeDirection = TRADE_DIRECTIONS.SELL;
@@ -931,25 +934,25 @@
         }
 
         const setCryptocurrency = (currentPair) => {
-            $currentPairLabel.innerText = currentPair;
-            currentCryptocurrencyPair = currentPair;
-            firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
-            secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
-                currentPair.length);
-
-
-            if ($('#switch').prop('checked')) $btnText.innerText = `Продать ${firstCryptocurrency}`;
-            else $btnText.innerText = `Купить ${firstCryptocurrency}`;
-            $secondCryptocurrencyLabel.innerText = secondCryptocurrency;
-            $firstCryptocurrencyLabel.innerText = firstCryptocurrency;
-            $totalCryptocurrencyLabel.innerText = secondCryptocurrency;
-
-            $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
-            $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
-            $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
-            $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
-
-            setChartData();
+            // $currentPairLabel.innerText = currentPair;
+            // currentCryptocurrencyPair = currentPair;
+            // firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
+            // secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
+            //     currentPair.length);
+            //
+            //
+            // if ($('#switch').prop('checked')) $btnText.innerText = `Продать ${firstCryptocurrency}`;
+            // else $btnText.innerText = `Купить ${firstCryptocurrency}`;
+            // $secondCryptocurrencyLabel.innerText = secondCryptocurrency;
+            // $firstCryptocurrencyLabel.innerText = firstCryptocurrency;
+            // $totalCryptocurrencyLabel.innerText = secondCryptocurrency;
+            //
+            // $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
+            // $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
+            // $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
+            // $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
+            //
+            // setChartData();
         }
 
         $listElement.onclick = (event) => {
@@ -1192,13 +1195,17 @@
                 setMessageToButton("Введите количество", $error);
                 return;
             }
-            //getVol == price*sendVol  sell
-            //getVol == sendVol/price buy
 
-            //send 0 get 1 sell
-            //send 1 get 0 buy
-            const currentSymbols = currentCryptocurrencyPair.toLowerCase()
-            const symbolsArray = currentSymbols.split('/')
+            const currentSymbols = currentCryptocurrencyPair.toLowerCase();
+            const symbolsArray = currentSymbols.split('/');
+            const symbolToSend = tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[1] : symbolsArray[0]
+            const symbolToGet = tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[0] : symbolsArray[1]
+            let tokenBalance = balances.filter(item => item.token === symbolToSend.toUpperCase())[0];
+
+            if (tokenBalance !== undefined && amount > tokenBalance.balance) {
+                setMessageToButton("Недостаточно средств", $error);
+                return;
+            }
 
             let walletAddress = localStorage.getItem('walletAddress');
             if (walletAddress === null) {
@@ -1212,26 +1219,27 @@
                 'sender': walletAddress,
                 'symbol': currentSymbols,
                 price,
-                'send': tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[1] : symbolsArray[0],
+                'send': symbolToSend,
                 'sendVol': amount,
-                'get': tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[0] : symbolsArray[1],
+                'get': symbolToGet,
                 'getVol': tradeDirection === TRADE_DIRECTIONS.BUY ? amount/price : price * amount,
                 'comissionAmount':2
             }
-            console.log(tx);
             try {
                 showLoader();
                 let result = await postData(`${API_URL}/transactions/new`, tx);
                 hideLoader();
-
                 let data = await result.json();
-                console.log(await result.json());
                 if (data.MSG && data.MSG.includes("Try to sign in first")) {
                     showAuthError();
                 } else if (data.MSG && data.MSG.includes("Tx pool synced among")) {
                     setMessageToButton("Заявка отправлена", $success);
                     $priceInput.value = NaN;
-                    $amountInput.value = Nan;
+                    $amountInput.value = NaN;
+                    $totalPrice.innerText = '';
+                    setBalance();
+                } else {
+                    setMessageToButton("Попробуйте позже", $error);
                 }
             } catch (e) {
                 hideLoader();
@@ -1295,13 +1303,15 @@
         }
 
         const setBalance = async () => {
+            balances = [];
+            $tokensListElement.innerText = '';
             try {
                 let address = localStorage.getItem('walletAddress');
                 let result = await postData(`${API_URL}/wallet/getBalance`, {address});
-                let items = (await result.json())['BALACNES'];
-                items.forEach(item => {
+                balances =  (await result.json())['BALACNES'];
+                balances.forEach(item => {
                     listItem = document.createElement('li');
-                    listItem.innerHTML = `${item.balance} ${item.token}`;
+                    listItem.innerHTML = `${Math.round(parseFloat(item.balance) * 10**(decimals)) / 10**(decimals)} ${item.token}`;
                     $tokensListElement.appendChild(listItem);
                 })
             } catch (e) {

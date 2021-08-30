@@ -272,7 +272,6 @@
         $btn.onclick = async () => {
             try {
                 let password = $passwordInput.value;
-                console.log(password)
                 if (password === '') {
                     setMessageToButton("Введите пароль", $error);
                     return;
@@ -284,11 +283,10 @@
                     setMessageToButton("Попробуйте еще раз", $error);
                 else {
                     result = await result.json()
-                    console.log(result)
                     if (result.MSG !== true && result.MSG.includes("Wrong password"))
                         setMessageToButton("Неправильный пароль", $error);
                     else {
-                        setMessageToButton("", $success);
+                        setMessageToButton("", $main);
                         localStorage.setItem('walletAddress', result.ADDRESS);
                         document.location.href = "index.html";
                     }
