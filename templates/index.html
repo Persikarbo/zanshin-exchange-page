@@ -688,15 +688,28 @@
         #open-orders-table, #orders-history-table {
             margin-top: 20px;
             border-collapse: collapse;
-            border: none;
             font-family: "Open Sans";
             font-size: 12px;
             color: #FFFFFF;
-            /*border-spacing: 5px 12px;*/
+        }
+
+        #open-orders-table tr td{
+            text-align: center;
+            padding: 10px 0;
         }
 
         #open-orders-table th {
             font-weight: normal;
+        }
+
+        #open-orders-table tr td:nth-last-child(-n+1){
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        #open-orders-table tr td:nth-child(1) {
+            text-align: left;
+            padding-left: 20px;
         }
 
         #open-orders-table th:nth-last-child(-n+1){
@@ -710,7 +723,6 @@
         }
 
         #open-orders-table thead tr{
-            font-weight: normal;
             line-height: var(--base-height);
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
@@ -730,7 +742,6 @@
         }
 
         #orders-history-table thead tr{
-            font-weight: normal;
             line-height: var(--base-height);
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
@@ -933,7 +944,9 @@
             $ordersHistoryBtn.style.borderBottomColor = '#FFFFFF';
         }
         // Declare all variables
-        let i, tabcontent, tablinks;
+        let i,
+            tabcontent,
+            tablinks;
 
         // Get all elements with class="tabcontent" and hide them
         tabcontent = document.getElementsByClassName("tab-content");

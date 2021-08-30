@@ -530,14 +530,12 @@ $(function () {
                     let date = new Date(element.timestamp*1000)
                     let formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
                     // first token && second token
-                    if (element.get === 'btc' && element.send === 'usdt') {
+                    if (element.get === firstCryptocurrency.toLowerCase() && element.send === secondCryptocurrency.toLowerCase()) {
                         direction = 'BUY';
-                        // amount = element.getVol;
                     }
                     // second token && first token
-                    if (element.get === 'usdt' && element.send === 'btc') {
+                    if (element.get === secondCryptocurrency.toLowerCase() && element.send === firstCryptocurrency.toLowerCase()) {
                         direction = 'SELL';
-                        // amount = element.sendVol
                     }
                     return [formattedDate, element.symbol, 'LIMIT', direction, element.price, parseFloat(element.sendVol).toFixed(6)]
                 })
@@ -564,7 +562,6 @@ $(function () {
             .then(res => res.json())
             .then(data => {
                 data.chain.shift();
-                console.log(walletAddress)
                 let filteredData = data.chain.filter(transaction => {
                     return transaction.sender === walletAddress
                 })
