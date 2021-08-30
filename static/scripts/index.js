@@ -19,7 +19,7 @@ $(function () {
     const $bidsTable = document.getElementById('bids-table');
     const $loader = document.getElementById('loader');
     const $authError = document.getElementById('auth-error');
-    const $loginBtn =  document.getElementById('login-btn');
+    const $loginBtn = document.getElementById('login-btn');
     const $signUpBtn = document.getElementById('signup-btn');
     const $totalAndBtnWrapper = document.getElementById('total-and-btn-wrapper');
     const $totalPriceField = document.getElementById('total-price-field');
@@ -28,35 +28,58 @@ $(function () {
     const $accButton = document.getElementById('acc-btn');
     const $exitBtn = document.getElementById('exit-btn');
     const $accAddress = document.getElementById('account-address');
-    const $tokensListElement =  document.getElementById('tokens-list');
+    const $tokensListElement = document.getElementById('tokens-list');
     const $copyIcon = document.getElementById('copy-icon');
     const $copyMessage = document.getElementById('copy-message-with-triangle');
     const $accountWrapper = document.getElementById('account-wrapper');
 
-    const API_URL = 'http://178.176.120.241:5000';
+    const API_URL = 'http://178.176.120.241:5002'; //Alina
     //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
     const TRADE_DIRECTIONS = {SELL: 'SELL', BUY: 'BUY'};
     let tradeDirection = TRADE_DIRECTIONS.BUY;
 
-    const $primaryColor="#4C5C97"
+    const $primaryColor = "#4C5C97"
     const $error = "#E27B7B";
     const $success = "#9FAF90";
 
-    const cryptocurrencyPairs = ['BTC/USDT', 'BTC/DAI', 'ETH/USDT', 'ETH/DAI', 'BNB/USDT', 'BNB/DAI', 'DOT/USDT',
+    const cryptocurrencyPairs = ['ZSH/USDT', 'BTC/USDT', 'BTC/DAI', 'ETH/USDT', 'ETH/DAI', 'BNB/USDT', 'BNB/DAI', 'DOT/USDT',
         'DOT/DAI', 'UNI/USDT', 'UNI/DAI', 'BTC/ETH', 'ETH/UNI', 'BTC/DOT', 'ETH/DOT']
 
-    // const defaultCryptocurrencyPair = 'BTC/USDT';
     const defaultCryptocurrencyPair = 'ZSH/USDT';
     let currentCryptocurrencyPair = defaultCryptocurrencyPair;
     let firstCryptocurrency = defaultCryptocurrencyPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
     let secondCryptocurrency = defaultCryptocurrencyPair.substring(defaultCryptocurrencyPair.indexOf('/') + 1,
         defaultCryptocurrencyPair.length);
-    let balances = [];
+
+    const setCryptocurrency = (currentPair) => {
+        $currentPairLabel.innerText = currentPair;
+        currentCryptocurrencyPair = currentPair;
+        firstCryptocurrency = currentCryptocurrencyPair.substring(0, currentCryptocurrencyPair.indexOf('/'));
+        secondCryptocurrency = currentCryptocurrencyPair.substring(currentCryptocurrencyPair.indexOf('/') + 1,
+            currentCryptocurrencyPair.length);
+
+
+        if ($('#switch').prop('checked')) $btnText.innerText = `Продать ${firstCryptocurrency}`;
+        else $btnText.innerText = `Купить ${firstCryptocurrency}`;
+        $secondCryptocurrencyLabel.innerText = secondCryptocurrency;
+        $firstCryptocurrencyLabel.innerText = firstCryptocurrency;
+        $totalCryptocurrencyLabel.innerText = secondCryptocurrency;
+
+        $tablePriceCol1.innerText = `Цена (${secondCryptocurrency})`;
+        $tableAmountCol1.innerText = `Количество (${firstCryptocurrency})`;
+        $tablePriceCol2.innerText = `Цена (${secondCryptocurrency})`;
+        $tableAmountCol2.innerText = `Количество (${firstCryptocurrency})`;
+
+        // setChartData();
+    }
 
     window.addEventListener("load", async function (event) {
         makeList();
-        makeTable($asksTable);
-        makeTable($bidsTable);
+        createTable($asksTable);
+        createTable($bidsTable);
+        setCryptocurrency(defaultCryptocurrencyPair);
+        createOpenOrdersTable();
+        createOrdersHistoryTable();
         // setChartData();
         let walletAddress = localStorage.getItem('walletAddress');
         if (walletAddress === null) {
@@ -67,24 +90,22 @@ $(function () {
             $authButtons.style.display = "none";
             $accButtons.style.display = "flex";
         }
+        document.getElementById("open-orders-btn").click();
     }, false);
 
-    window.addEventListener("mousedown", async function (event){
+    window.addEventListener("mousedown", async function (event) {
         let $accountWindow = document.getElementById('account-window-with-triangle');
-        if(event.target !== $accountWindow && !$accountWindow.contains(event.target) && $accountWrapper.style.opacity === "1")
-        {
+        if (event.target !== $accountWindow && !$accountWindow.contains(event.target) && $accountWrapper.style.opacity === "1") {
             $accountWrapper.style.opacity = "0";
             $accButton.style.borderBottomColor = 'transparent';
         }
     })
 
     $switchButton.onclick = () => {
-        returnOldButton();
         if ($('#switch').prop('checked')) {
             $btnText.innerText = `Продать ${firstCryptocurrency}`;
             tradeDirection = TRADE_DIRECTIONS.SELL;
-        }
-        else {
+        } else {
             $btnText.innerText = `Купить ${firstCryptocurrency}`;
             tradeDirection = TRADE_DIRECTIONS.BUY;
         }
@@ -94,20 +115,20 @@ $(function () {
 
     $priceInput.oninput = () => {
         returnOldButton();
-        $priceInput.value = Math.round(Number($priceInput.value) * 10**(decimals)) / 10**(decimals);
         let price = Number($priceInput.value);
-        let amount = Number ($amountInput.value);
-        if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10**(decimals)) /
-            10**(decimals)).toString().replace('.',',');
+        $priceInput.value = Math.round((price) * 1000000) / 1000000;
+        let amount = Number($amountInput.value);
+        if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10 ** (decimals)) /
+            10 ** (decimals)).toString().replace('.', ',');
     }
 
     $amountInput.oninput = () => {
         returnOldButton();
-        $amountInput.value = Math.round(parseFloat($amountInput.value) * 10**(decimals)) / 10**(decimals);
+        let amount = Number($amountInput.value);
+        $amountInput.value = Math.round(amount * 10 ** (decimals)) / 10 ** (decimals);
         let price = Number($priceInput.value);
-        let amount = Number ($amountInput.value);
-        if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10**(decimals)) /
-            10**(decimals)).toString().replace('.',',');
+        if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10 ** (decimals)) /
+            10 ** (decimals)).toString().replace('.', ',');
     }
 
     const makeList = () => {
@@ -144,38 +165,16 @@ $(function () {
         return e.target || e.srcElement;
     }
 
-    const setCryptocurrency = (currentPair) => {
-        // $currentPairLabel.innerText = currentPair;
-        // currentCryptocurrencyPair = currentPair;
-        // firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
-        // secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
-        //     currentPair.length);
-        //
-        //
-        // if ($('#switch').prop('checked')) $btnText.innerText = `Продать ${firstCryptocurrency}`;
-        // else $btnText.innerText = `Купить ${firstCryptocurrency}`;
-        // $secondCryptocurrencyLabel.innerText = secondCryptocurrency;
-        // $firstCryptocurrencyLabel.innerText = firstCryptocurrency;
-        // $totalCryptocurrencyLabel.innerText = secondCryptocurrency;
-        //
-        // $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
-        // $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
-        // $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
-        // $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
-        //
-        // setChartData();
-    }
-
-    $listElement.onclick = (event) => {
-        let target = getEventTarget(event).innerText;
-        if (target.length < 10) setCryptocurrency(target);
-        clearInterval(refreshOrderBook);
-        refreshOrderBook = setInterval(orderBook, 5000);
-    }
+    // $listElement.onclick = (event) => {
+    //     let target = getEventTarget(event).innerText;
+    //     if (target.length < 10) setCryptocurrency(target);
+    //     clearInterval(refreshOrderBook);
+    //     refreshOrderBook = setInterval(orderBook, 5000);
+    // }
 
     const orderBookLimit = 10;
 
-    const makeTable = (container) => {
+    const createTable = (container) => {
         let i,
             j,
             tableRow,
@@ -191,68 +190,26 @@ $(function () {
         }
     }
 
-    // const orderBook = () => {
-    //     let request = new XMLHttpRequest();
-    //     request.open('GET','https://api.binance.com/api/v1/depth?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&limit=' + orderBookLimit,true);
-    //     request.onload = () => {
-    //         let orderBookData = JSON.parse(request.responseText);
-    //
-    //         for (let i = 0; i < $asksTable.rows.length - 1; ++i) {
-    //             let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
-    //             cols[0].innerText = (parseFloat(orderBookData.asks[i][0])).toFixed(decimals);
-    //             cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
-    //             cols[0].style.borderRadius = '10px';
-    //             cols[0].style.textAlign = 'center';
-    //             cols[0].style.color = '#fff';
-    //             cols[1].innerText = (parseFloat(orderBookData.asks[i][1])).toFixed(decimals);
-    //             cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
-    //         }
-    //
-    //         for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
-    //             let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
-    //             cols[0].innerText = (parseFloat(orderBookData.bids[i][0])).toFixed(decimals);
-    //             cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
-    //             cols[0].style.borderRadius = '10px';
-    //             cols[0].style.textAlign = 'center';
-    //             cols[0].style.color = '#fff';
-    //             cols[1].innerText = (parseFloat(orderBookData.bids[i][1])).toFixed(decimals);
-    //             cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
-    //         }
-    //     }
-    //
-    //     request.send();
-    //
-    //     let currentPair = $currentPairLabel.innerText;
-    //     firstCryptocurrency = currentPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
-    //     secondCryptocurrency = currentPair.substring(currentPair.indexOf('/') + 1,
-    //         currentPair.length);
-    //     $tablePriceCol1.innerText = `Цена(${secondCryptocurrency})`;
-    //     $tableAmountCol1.innerText = `Количество(${firstCryptocurrency})`;
-    //     $tablePriceCol2.innerText = `Цена(${secondCryptocurrency})`;
-    //     $tableAmountCol2.innerText = `Количество(${firstCryptocurrency})`;
-    //
-    // }
-
     let orderBookData = {
         asks: [],
         bids: [],
     }
 
-    const descendingOrder = ( a, b ) => {
-        if ( a.price > b.price ){
+    const descendingOrder = (a, b) => {
+        if (a.price > b.price) {
             return -1;
         }
-        if ( a.price < b.price ){
+        if (a.price < b.price) {
             return 1;
         }
         return 0;
     }
 
-    const ascendingOrder = ( a, b ) => {
-        if ( a.price < b.price ){
+    const ascendingOrder = (a, b) => {
+        if (a.price < b.price) {
             return -1;
         }
-        if ( a.price > b.price ){
+        if (a.price > b.price) {
             return 1;
         }
         return 0;
@@ -264,14 +221,14 @@ $(function () {
             bids: [],
         }
 
-        data.forEach( element => {
+        data.forEach(element => {
             let direction = element.direction;
-            if (direction === 'zsh') orderBookData.asks.push({price: element.price, amount: element.amount});
-            if (direction === 'usdt') orderBookData.bids.push({price: element.price, amount: element.amount});
+            if (direction[0] === firstCryptocurrency.toLowerCase() && direction[1] === secondCryptocurrency.toLowerCase()) orderBookData.asks.push({price: element.price, amount: element.amount});
+            if (direction[0] === secondCryptocurrency.toLowerCase() && direction[1] === firstCryptocurrency.toLowerCase()) orderBookData.bids.push({price: element.price, amount: element.amount});
         })
 
-        orderBookData.asks.sort( descendingOrder );
-        orderBookData.bids.sort ( ascendingOrder );
+        orderBookData.asks.sort(descendingOrder);
+        orderBookData.bids.sort(ascendingOrder);
 
     }
 
@@ -280,7 +237,7 @@ $(function () {
             .then(res => res.json())
             .then(data => {
                 const obdata = data.tradeOrders.map(d => {
-                    return {price:d.price, direction: d.send, amount: d.sendVol}
+                    return {price: d.price, direction: [d.send, d.get], amount: d.sendVol}
                 });
                 // limit
                 // obdate = obdata.slice(3, obdata.length)
@@ -297,6 +254,12 @@ $(function () {
                         cols[1].innerText = orderBookData.asks[i].amount.toFixed(decimals);
                         cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
                     }
+                    else {
+                        cols[0].innerText = "";
+                        cols[0].style.backgroundColor = 'transparent';
+                        cols[1].innerText = "";
+                        cols[2].innerText = "";
+                    }
                 }
 
                 for (let i = 0; i < $bidsTable.rows.length - 1; ++i) {
@@ -309,6 +272,12 @@ $(function () {
                         cols[0].style.color = '#fff';
                         cols[1].innerText = orderBookData.bids[i].amount.toFixed(decimals);
                         cols[2].innerText = ((cols[0].innerText * cols[1].innerText).toFixed(6)).toString();
+                    }
+                    else {
+                        cols[0].innerText = "";
+                        cols[0].style.backgroundColor = 'transparent';
+                        cols[1].innerText = "";
+                        cols[2].innerText = "";
                     }
                 }
             })
@@ -327,18 +296,6 @@ $(function () {
     //                 .catch(err => console.log(err))
     //     }
 
-    // const updateChartData = () => {
-    //     let request = new XMLHttpRequest();
-    //     request.open('GET','https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1',true);
-    //     request.onload = () => {
-    //         let chartData = JSON.parse(request.responseText);
-    //         let currentData = {time:chartData[0][0]/1000,open:parseFloat(chartData[0][1]),high:parseFloat(chartData[0][2]),low:parseFloat(chartData[0][3]),close:parseFloat(chartData[0][4])};
-    //         candleSeries.update(currentData);
-    //         }
-    //
-    //     request.send();
-    // }
-
     const updateChartData = () => {
         fetch(`${API_URL}/chain`)
             .then(res => res.json())
@@ -346,53 +303,58 @@ $(function () {
                 data.chain.shift();
                 const cdata = data.chain.map(block => {
                     let filteredTransactions = block.transactions.filter(transaction => {
-                        return transaction.tradeTxId !== null && transaction.contract === 'zsh';
+                        return (transaction.tradeTxId !== null) && (transaction.contract === firstCryptocurrency.toLowerCase());
                     })
-                    prices = filteredTransactions.map(transaction => {
+                    let prices = filteredTransactions.map(transaction => {
                         return transaction.price;
                     })
-                    volume = filteredTransactions.map(transaction => {
+                    let volume = filteredTransactions.map(transaction => {
                         return transaction.sendAmount;
                     })
-                    return {time: new Date(block.timestamp*1000).getTime(), prices: prices, volume: volume}
+                    return {time: new Date(block.timestamp * 1000).getTime(), prices: prices, volume: volume}
                 })
 
                 let currentDate = new Date();
                 let chartIntervalStart = new Date();
-                chartIntervalStart.setDate(currentDate.getDate() - 1); // One day interval
-                let filteredData = cdata.filter(element => element.time > chartIntervalStart.getTime())
-                let open = filteredData[0].prices[0];
-                let lastTransaction = filteredData[filteredData.length - 1];
-                let lastPrice = lastTransaction.prices[lastTransaction.prices.length - 1];
-                let close = lastPrice;
-                let high = null;
-                let low = null;
-                let totalVolume = null;
-                filteredData.forEach( element => {
-                    element.prices.forEach( price => {
-                        if (low === null || price < low) low = price;
-                        if (high === null || price > high) high = price;
-                    })
+                chartIntervalStart.setDate(currentDate.getDate() - 7); // One day interval
+                let filteredData = cdata.filter(element => {
+                    return element.time > chartIntervalStart.getTime() && element.prices.length !== 0 && element.volume.length !== 0
                 })
-                filteredData.forEach( element => {
-                    element.volume.forEach( v => {
-                        totalVolume += v;
+                if (filteredData.length !== 0) {
+                    let open = filteredData[0].prices[0];
+                    let lastTransaction = filteredData[filteredData.length - 1];
+                    let lastPrice = lastTransaction.prices[lastTransaction.prices.length - 1];
+                    let close = lastPrice;
+                    let high = null;
+                    let low = null;
+                    let totalVolume = null;
+
+                    filteredData.forEach(element => {
+                        element.prices.forEach(price => {
+                            if (low === null || price < low) low = price;
+                            if (high === null || price > high) high = price;
+                        })
                     })
-                })
-                currentDate.setHours(0);
-                currentDate.setMinutes(0);
-                currentDate.setSeconds(0);
-                currentDate.setMilliseconds(0);
-                let currentData = {time:currentDate.getTime()/1000,open:open,high:high,low:low,close:close};
-                candleSeries.update(currentData);
-                let currentDataVolume = {time: currentDate.getTime()/1000, value: totalVolume};
-                volumeSeries.update(currentDataVolume);
+                    filteredData.forEach(element => {
+                        element.volume.forEach(v => {
+                            totalVolume += v;
+                        })
+                    })
+                    currentDate.setHours(0);
+                    currentDate.setMinutes(0);
+                    currentDate.setSeconds(0);
+                    currentDate.setMilliseconds(0);
+                    let currentData = {time: currentDate.getTime() / 1000, open: open, high: high, low: low, close: close};
+                    candleSeries.update(currentData);
+                    let currentDataVolume = {time: currentDate.getTime() / 1000, value: totalVolume};
+                    volumeSeries.update(currentDataVolume);
+                }
             })
             .catch(err => console.log(err))
     }
 
     let refreshChart = setInterval(updateChartData, 5000);
-    let refreshOrderBook = setInterval(orderBook,5000);
+    let refreshOrderBook = setInterval(orderBook, 5000);
 
     $btn.onclick = async () => {
         const price = parseFloat($priceInput.value);
@@ -406,17 +368,13 @@ $(function () {
             setMessageToButton("Введите количество", $error);
             return;
         }
+        //getVol == price*sendVol  sell
+        //getVol == sendVol/price buy
 
-        const currentSymbols = currentCryptocurrencyPair.toLowerCase();
-        const symbolsArray = currentSymbols.split('/');
-        const symbolToSend = tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[1] : symbolsArray[0]
-        const symbolToGet = tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[0] : symbolsArray[1]
-        let tokenBalance = balances.filter(item => item.token === symbolToSend.toUpperCase())[0];
-
-        if (tokenBalance !== undefined && amount > tokenBalance.balance) {
-            setMessageToButton("Недостаточно средств", $error);
-            return;
-        }
+        //send 0 get 1 sell
+        //send 1 get 0 buy
+        const currentSymbols = currentCryptocurrencyPair.toLowerCase()
+        const symbolsArray = currentSymbols.split('/')
 
         let walletAddress = localStorage.getItem('walletAddress');
         if (walletAddress === null) {
@@ -430,37 +388,31 @@ $(function () {
             'sender': walletAddress,
             'symbol': currentSymbols,
             price,
-            'send': symbolToSend,
+            'send': tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[1] : symbolsArray[0],
             'sendVol': amount,
-            'get': symbolToGet,
-            'getVol': tradeDirection === TRADE_DIRECTIONS.BUY ? amount/price : price * amount,
-            'comissionAmount':2
+            'get': tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[0] : symbolsArray[1],
+            'getVol': tradeDirection === TRADE_DIRECTIONS.BUY ? amount / price : price * amount,
+            'comissionAmount': 2
         }
+        // console.log(tx);
         try {
             showLoader();
             let result = await postData(`${API_URL}/transactions/new`, tx);
             hideLoader();
+
             let data = await result.json();
-            if (data.MSG) {
-                if (data.MSG.includes("Tx pool synced among")) {
-                    setMessageToButton("Заявка отправлена", $success);
-                    $priceInput.value = NaN;
-                    $amountInput.value = NaN;
-                    $totalPrice.innerText = '';
-                    setBalance();
-                } else if (data.MSG.includes("Try to sign in first"))
-                    showAuthError();
-                else if (data.MSG.includes("Spend amount exceeds account balance"))
-                    setMessageToButton("Недостаточно средств", $error);
-                else {
-                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
-                }
-            } else {
-                setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
+            console.log(await result.json());
+            if (data.MSG && data.MSG.includes("Try to sign in first")) {
+                showAuthError();
+            } else if (data.MSG && data.MSG.includes("Tx pool synced among")) {
+                setMessageToButton("Заявка отправлена", $success);
+                $priceInput.value = NaN;
+                $amountInput.value = NaN;
             }
+            createOpenOrdersTable();
         } catch (e) {
             hideLoader();
-            setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
+            setMessageToButton("Ошибка на сервере. Пожалуйста, повторите попытку позже.", $error);
         }
 
     }
@@ -503,7 +455,7 @@ $(function () {
     const returnOldButton = () => {
         $btn.style.pointerEvents = "auto";
         $btn.style.removeProperty("background");
-        $btnText.innerText = tradeDirection === TRADE_DIRECTIONS.SELL ? `Продать ${firstCryptocurrency}` : `Купить ${firstCryptocurrency}` ;
+        $btnText.innerText = tradeDirection === TRADE_DIRECTIONS.SELL ? `Продать ${firstCryptocurrency}` : `Купить ${firstCryptocurrency}`;
     }
 
     $exitBtn.onclick = () => {
@@ -516,19 +468,17 @@ $(function () {
     const getShortAddress = () => {
         let walletAddress = localStorage.getItem('walletAddress');
         let addressLength = walletAddress.length;
-        return `${walletAddress.slice(0,4)}...${walletAddress.slice(addressLength - 4, addressLength)}`
+        return `${walletAddress.slice(0, 4)}...${walletAddress.slice(addressLength - 4, addressLength)}`
     }
 
     const setBalance = async () => {
-        balances = [];
-        $tokensListElement.innerText = '';
         try {
             let address = localStorage.getItem('walletAddress');
             let result = await postData(`${API_URL}/wallet/getBalance`, {address});
-            balances =  (await result.json())['BALACNES'];
-            balances.forEach(item => {
+            let items = (await result.json())['BALACNES'];
+            items.forEach(item => {
                 listItem = document.createElement('li');
-                listItem.innerHTML = `${Math.round(parseFloat(item.balance) * 10**(decimals)) / 10**(decimals)} ${item.token}`;
+                listItem.innerHTML = `${item.balance} ${item.token}`;
                 $tokensListElement.appendChild(listItem);
             })
         } catch (e) {
@@ -536,7 +486,7 @@ $(function () {
         }
     }
 
-    $copyIcon.onclick = async() => {
+    $copyIcon.onclick = async () => {
         let copyText = localStorage.getItem('walletAddress');
         await navigator.clipboard.writeText(copyText)
         $copyMessage.style.opacity = "1";
@@ -552,6 +502,89 @@ $(function () {
         else $accountWrapper.style.opacity = "0";
     }
 
+    const createOpenOrdersTable = () => {
+        let walletAddress = localStorage.getItem('walletAddress');
+        fetch(`${API_URL}/getTradeOrders`)
+            .then(res => res.json())
+            .then(data => {
+                let filteredData = data.tradeOrders.filter(order => {
+                    return order.sender === walletAddress
+                })
+                let parsedData = filteredData.map(element => {
+                    let direction = null;
+                    let amount = null;
+                    let date = new Date(element.timestamp*1000)
+                    let formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+                    // first token && second token
+                    if (element.get === 'btc' && element.send === 'usdt') {
+                        direction = 'BUY';
+                        // amount = element.getVol;
+                    }
+                    // second token && first token
+                    if (element.get === 'usdt' && element.send === 'btc') {
+                        direction = 'SELL';
+                        // amount = element.sendVol
+                    }
+                    return [formattedDate, element.symbol, 'LIMIT', direction, element.price, parseFloat(element.sendVol).toFixed(6)]
+                })
 
+                if (filteredData.length > 0) {
+                    let openOrdersTable = document.getElementById('open-orders-table');
 
+                    for (let i = 0; i < filteredData.length; ++i) {
+                        let tableRow = document.createElement('tr');
+                        openOrdersTable.appendChild(tableRow);
+                        for (let j = 0; j < 6; ++j) {
+                            let tableCell = document.createElement('td');
+                            tableRow.appendChild(tableCell);
+                            tableCell.innerText = parsedData[i][j];
+                        }
+                    }
+                }
+            })
+    }
+
+    const createOrdersHistoryTable = () => {
+        let walletAddress = localStorage.getItem('walletAddress');
+        fetch(`${API_URL}/chain`)
+            .then(res => res.json())
+            .then(data => {
+                data.chain.shift();
+                console.log(walletAddress)
+                let filteredData = data.chain.filter(transaction => {
+                    return transaction.sender === walletAddress
+                })
+                // let parsedData = filteredData.map(element => {
+                //     let direction = null;
+                //     let amount = null;
+                //     let date = new Date(element.timestamp*1000)
+                //     let formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+                //     // first token && second token
+                //     if (element.get === 'btc' && element.send === 'usdt') {
+                //         direction = 'BUY';
+                //         // amount = element.getVol;
+                //     }
+                //     // second token && first token
+                //     if (element.get === 'usdt' && element.send === 'btc') {
+                //         direction = 'SELL';
+                //         // amount = element.sendVol
+                //     }
+                //     return [formattedDate, element.symbol, 'LIMIT', direction, element.price, parseFloat(element.sendVol).toFixed(6)]
+                // })
+                //
+                // if (filteredData.length > 0) {
+                //     let openOrdersTable = document.getElementById('open-orders-table');
+                //
+                //     for (let i = 0; i < filteredData.length; ++i) {
+                //         let tableRow = document.createElement('tr');
+                //         openOrdersTable.appendChild(tableRow);
+                //         for (let j = 0; j < 6; ++j) {
+                //             let tableCell = document.createElement('td');
+                //             tableRow.appendChild(tableCell);
+                //             tableCell.innerText = parsedData[i][j];
+                //         }
+                //     }
+                // }
+            })
+    }
 })

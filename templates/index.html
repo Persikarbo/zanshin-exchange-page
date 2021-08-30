@@ -16,8 +16,9 @@
         body {
             background: url('../static/images/background-image-2-3.png') no-repeat fixed top right;
             background-size: cover;
-            padding: 19px 13% 13%;
-            height: 100%; overflow: hidden;
+            padding: 19px 13% 19px 13%;
+            /*height: 100%;*/
+            /*overflow: hidden;*/
         }
 
         #header {
@@ -33,6 +34,7 @@
             display: flex;
             flex-direction: row;
             justify-content: flex-end;
+            padding: 0 15px;
             width: 30%;
         }
 
@@ -43,23 +45,6 @@
             text-decoration: none;
             cursor: pointer;
         }
-
-        /*.header-buttons a:after {*/
-        /*    padding-top: 5px;*/
-        /*    background-color: white;*/
-        /*    display: block;*/
-        /*    content: "";*/
-        /*    height: 2px;*/
-        /*    width: 0%;*/
-        /*    -webkit-transition: width .3s ease-in-out;*/
-        /*    -moz--transition: width .3s ease-in-out;*/
-        /*    transition: width .3s ease-in-out;*/
-        /*}*/
-
-        /*.header-buttons a:hover:after,*/
-        /*.header-buttons a:focus:after {*/
-        /*    width: 100%;*/
-        /*}*/
 
         .first-btn {
             padding-right: 20%;
@@ -308,7 +293,7 @@
             list-style-type: none;
             padding: 0;
             margin: 0;
-            height: 12em;
+            height: 10em;
             overflow: auto;
         }
 
@@ -616,6 +601,9 @@
         .table {
             width: 100%;
             table-layout: fixed;
+        }
+
+        #asks-table, #bids-table {
             border-spacing: 5px 12px;
         }
 
@@ -656,6 +644,105 @@
         #total-and-btn-wrapper {
             display: flex;
             flex-direction: column;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        #tabs-wrapper {
+            margin-top: 2%;
+            width: 100%;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        #tabs-buttons {
+            width: 30%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        #orders-history-btn, #open-orders-btn {
+            transition: border-bottom-color 0.3s;
+            border-bottom: 2px solid;
+            border-bottom-color: transparent;
+        }
+
+        .tab-links {
+            line-height: var(--base-height);
+            font-size: var(--base-font-size);
+            font-family: "Open Sans";
+            color: #FFFFFF;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        #open-orders-table, #orders-history-table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            border: none;
+            font-family: "Open Sans";
+            font-size: 12px;
+            color: #FFFFFF;
+            /*border-spacing: 5px 12px;*/
+        }
+
+        #open-orders-table th {
+            font-weight: normal;
+        }
+
+        #open-orders-table th:nth-last-child(-n+1){
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        #open-orders-table th:nth-child(1) {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        #open-orders-table thead tr{
+            font-weight: normal;
+            line-height: var(--base-height);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #orders-history-table th {
+            font-weight: normal;
+        }
+
+        #orders-history-table th:nth-last-child(-n+1){
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        #orders-history-table th:nth-child(1) {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        #orders-history-table thead tr{
+            font-weight: normal;
+            line-height: var(--base-height);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tables-info {
+            display: none;
+            margin-top: 12%;
+            font-family: "Open Sans";
+            font-size: var(--base-font-size);
+            color: #FFFFFF;
+            width: 100%;
+            text-align: center;
         }
 
 </style>
@@ -700,67 +787,80 @@
         </div>
     </div>
 </div>
-<div id="main-wrapper" style="display: flex; flex-direction: row; width: 100%;">
-    <div style="display: flex; flex-direction: column; width: 68%;">
-        <div id="chartContainer"><div class="floating-tooltip-2" id="tool-tip"></div></div>
-        <div id="content">
-            <div id="cryptocurrency-pairs-wrapper">
-                <div id="current-cryptocurrency-pair">BTC/USDT</div>
-                <div id="search-input-wrapper">
-                    <span class="material-icons-outlined" id="search-icon"> search </span>
-                    <input type="text" id="search-input">
+<div style="display: flex; flex-direction: column; width: 100%; height: 100%">
+    <div style="display: flex; flex-direction: row; width: 100%;">
+        <div style="display: flex; flex-direction: column; width: 68%;">
+            <div id="chartContainer"><div class="floating-tooltip-2" id="tool-tip"></div></div>
+            <div id="content">
+                <div id="cryptocurrency-pairs-wrapper">
+                    <div id="current-cryptocurrency-pair">BTC/USDT</div>
+                    <div id="search-input-wrapper">
+                        <span class="material-icons-outlined" id="search-icon"> search </span>
+                        <input type="text" id="search-input">
+                    </div>
+                    <ul id="list">
+                    </ul>
                 </div>
-                <ul id="list">
-                </ul>
-            </div>
-            <div id="wrapper">
+                <div id="wrapper">
                 <span class="toggle-button buy-btn">
                     <input type="checkbox" name="" id="switch">
                     <label for="switch"></label>
                 </span>
-                <!--    <div id="available-amount">Доступно 0 USDT</div>-->
-                <div class="field-wrapper" id="price-input-wrapper">
-                    <div class="field-name">Цена</div>
-                    <input type="number" name="input" class="input" id="price-input" placeholder="0">
-                    <div class="cryptocurrency-name" id="second-cryptocurrency">USDT</div>
-                </div>
-                <div class="field-wrapper" id="amount-input-wrapper">
-                    <div class="field-name">Количество</div>
-                    <input type="number" name="input" class ="input" id="amount-input" placeholder="0">
-                    <div class="cryptocurrency-name" id="first-cryptocurrency">BTC</div>
-                </div>
-                <div id="horizontal-line"></div>
-                <div id="total-and-btn-wrapper">
-                    <div class="field-wrapper" id="total-price-field">
-                        <div class="field-name">Всего</div>
-                        <div id="total-price"></div>
-                        <div class="cryptocurrency-name" id="total-cryptocurrency">USDT</div>
+                    <!--    <div id="available-amount">Доступно 0 USDT</div>-->
+                    <div class="field-wrapper" id="price-input-wrapper">
+                        <div class="field-name">Цена</div>
+                        <input type="number" name="input" class="input" id="price-input" placeholder="0">
+                        <div class="cryptocurrency-name" id="second-cryptocurrency">USDT</div>
                     </div>
-                    <div id="btn-wrapper">
-                        <button id="btn">
-                            <div id="loader"></div>
-                            <div id="btn-text">Купить BTC</div>
-                        </button>
-                        <div id="auth-error">
-                            <div>
-                                <a href="login.html" class="link">Войдите</a>
-                                <span id="btn-text2"> или </span>
-                                <a href="sign_up.html" class="link">Зарегистрируйтесь</a>
+                    <div class="field-wrapper" id="amount-input-wrapper">
+                        <div class="field-name">Количество</div>
+                        <input type="number" name="input" class ="input" id="amount-input" placeholder="0">
+                        <div class="cryptocurrency-name" id="first-cryptocurrency">ZSH</div>
+                    </div>
+                    <div id="horizontal-line"></div>
+                    <div id="total-and-btn-wrapper">
+                        <div class="field-wrapper" id="total-price-field">
+                            <div class="field-name">Всего</div>
+                            <div id="total-price"></div>
+                            <div class="cryptocurrency-name" id="total-cryptocurrency">USDT</div>
+                        </div>
+                        <div id="btn-wrapper">
+                            <button id="btn">
+                                <div id="loader"></div>
+                                <div id="btn-text">Купить ZSH</div>
+                            </button>
+                            <div id="auth-error">
+                                <div>
+                                    <a href="login.html" class="link">Войдите</a>
+                                    <span id="btn-text2"> или </span>
+                                    <a href="sign_up.html" class="link">Зарегистрируйтесь</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div id="order-book">
-        <div style="padding: 4%; height: 100%">
-            <div style="height: 50%">
-                <table  id="asks-table" class="table">
+        <div id="order-book">
+            <div style="padding: 4%; height: 100%">
+                <div style="height: 48%">
+                    <table  id="asks-table" class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col" id="table-price-col-1">Цена(USDT)</th>
+                            <th scope="col" id="table-amount-col-1">Количество(ZSH)</th>
+                            <th scope="col">Всего</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <table id="bids-table" class="table">
                     <thead>
                     <tr>
-                        <th scope="col" id="table-price-col-1">Цена(USDT)</th>
-                        <th scope="col" id="table-amount-col-1">Количество(BTC)</th>
+                        <th scope="col" id="table-price-col-2">Цена(USDT)</th>
+                        <th scope="col" id="table-amount-col-2">Количество(ZSH)</th>
                         <th scope="col">Всего</th>
                     </tr>
                     </thead>
@@ -768,25 +868,90 @@
                     </tbody>
                 </table>
             </div>
-            <table id="bids-table" class="table">
-                <thead>
-                <tr>
-                    <th scope="col" id="table-price-col-2">Цена(USDT)</th>
-                    <th scope="col" id="table-amount-col-2">Количество(BTC)</th>
-                    <th scope="col">Всего</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
         </div>
     </div>
+    <div id="tabs-wrapper">
+        <div style="padding: 2%">
+            <div id="tabs-buttons">
+                <button class="tab-links" id="open-orders-btn" onclick="openTab(event, 'open-orders')">Открытые сделки</button>
+                <button class="tab-links" id="orders-history-btn" onclick="openTab(event, 'orders-history')">История сделок</button>
+            </div>
+            <div id="open-orders" class="tab-content">
+                <table  id="open-orders-table" class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Пара</th>
+                        <th scope="col">Тип</th>
+                        <th scope="col">Направление</th>
+                        <th scope="col">Цена</th>
+                        <th scope="col">Количество</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div class="tables-info" id="open-orders-info">У вас пока нет открытых сделок</div>
+            </div>
+
+            <div id="orders-history" class="tab-content">
+                <table  id="orders-history-table" class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Пара</th>
+                        <th scope="col">Тип</th>
+                        <th scope="col">Направление</th>
+                        <th scope="col">Цена</th>
+                        <th scope="col">Статус</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div class="tables-info" id="orders-history-info">У вас пока нет выполненных сделок</div>
+            </div>
+        </div>
+        </div>
 </div>
 </body>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 <script type="text/javascript" src="../static/scripts/dynamicCharts/index.js"></script>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="../static/scripts/index.js"></script>
 <script>
+    const openTab = (evt, tabName) => {
+        const $openOrdersBtn = document.getElementById('open-orders-btn');
+        const $ordersHistoryBtn = document.getElementById('orders-history-btn');
+
+        if (tabName === 'open-orders') {
+            $openOrdersBtn.style.borderBottomColor = '#FFFFFF';
+            $ordersHistoryBtn.style.borderBottomColor = 'transparent';
+        }
+        else {
+            $openOrdersBtn.style.borderBottomColor = 'transparent';
+            $ordersHistoryBtn.style.borderBottomColor = '#FFFFFF';
+        }
+        // Declare all variables
+        let i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tab-links");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
 </script>
 </html>
 
