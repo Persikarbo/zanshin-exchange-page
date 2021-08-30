@@ -1230,16 +1230,22 @@
                 let result = await postData(`${API_URL}/transactions/new`, tx);
                 hideLoader();
                 let data = await result.json();
-                if (data.MSG && data.MSG.includes("Try to sign in first")) {
-                    showAuthError();
-                } else if (data.MSG && data.MSG.includes("Tx pool synced among")) {
-                    setMessageToButton("Заявка отправлена", $success);
-                    $priceInput.value = NaN;
-                    $amountInput.value = NaN;
-                    $totalPrice.innerText = '';
-                    setBalance();
+                if (data.MSG) {
+                    if (data.MSG.includes("Tx pool synced among")) {
+                        setMessageToButton("Заявка отправлена", $success);
+                        $priceInput.value = NaN;
+                        $amountInput.value = NaN;
+                        $totalPrice.innerText = '';
+                        setBalance();
+                    } else if (data.MSG.includes("Try to sign in first"))
+                        showAuthError();
+                    else if (data.MSG.includes("Spend amount exceeds account balance"))
+                        setMessageToButton("Недостаточно средств", $error);
+                    else {
+                        setMessageToButton("Ошибка на сервере. Пожалуйста повторите позже.", $error);
+                    }
                 } else {
-                    setMessageToButton("Попробуйте позже", $error);
+                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите позже.", $error);
                 }
             } catch (e) {
                 hideLoader();

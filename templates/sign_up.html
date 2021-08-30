@@ -278,11 +278,11 @@
                     document.location.href = "login.html";
                 }
                 else {
-                    setMessageToButton("Попробуйте позже", $error);
+                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите позже.", $error);
                 }
             } catch (e) {
                 hideLoader();
-                setMessageToButton("Попробуйте позже", $error);
+                setMessageToButton("Ошибка на сервере. Пожалуйста повторите позже.", $error);
             }
 
         }
