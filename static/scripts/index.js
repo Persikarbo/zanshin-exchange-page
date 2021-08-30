@@ -50,6 +50,7 @@ $(function () {
     let firstCryptocurrency = defaultCryptocurrencyPair.substring(0, defaultCryptocurrencyPair.indexOf('/'));
     let secondCryptocurrency = defaultCryptocurrencyPair.substring(defaultCryptocurrencyPair.indexOf('/') + 1,
         defaultCryptocurrencyPair.length);
+    let balances = [];
 
     const setCryptocurrency = (currentPair) => {
         $currentPairLabel.innerText = currentPair;
@@ -102,6 +103,7 @@ $(function () {
     })
 
     $switchButton.onclick = () => {
+        returnOldButton();
         if ($('#switch').prop('checked')) {
             $btnText.innerText = `Продать ${firstCryptocurrency}`;
             tradeDirection = TRADE_DIRECTIONS.SELL;
@@ -368,13 +370,17 @@ $(function () {
             setMessageToButton("Введите количество", $error);
             return;
         }
-        //getVol == price*sendVol  sell
-        //getVol == sendVol/price buy
 
-        //send 0 get 1 sell
-        //send 1 get 0 buy
-        const currentSymbols = currentCryptocurrencyPair.toLowerCase()
-        const symbolsArray = currentSymbols.split('/')
+        const currentSymbols = currentCryptocurrencyPair.toLowerCase();
+        const symbolsArray = currentSymbols.split('/');
+        const symbolToSend = tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[1] : symbolsArray[0]
+        const symbolToGet = tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[0] : symbolsArray[1]
+        let tokenBalance = balances.filter(item => item.token === symbolToSend.toUpperCase())[0];
+
+        if (tokenBalance !== undefined && amount > tokenBalance.balance) {
+            setMessageToButton("Недостаточно средств", $error);
+            return;
+        }
 
         let walletAddress = localStorage.getItem('walletAddress');
         if (walletAddress === null) {
@@ -388,33 +394,39 @@ $(function () {
             'sender': walletAddress,
             'symbol': currentSymbols,
             price,
-            'send': tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[1] : symbolsArray[0],
+            'send': symbolToSend,
             'sendVol': amount,
-            'get': tradeDirection === TRADE_DIRECTIONS.BUY ? symbolsArray[0] : symbolsArray[1],
+            'get': symbolToGet,
             'getVol': tradeDirection === TRADE_DIRECTIONS.BUY ? amount / price : price * amount,
             'comissionAmount': 2
         }
-        // console.log(tx);
         try {
             showLoader();
             let result = await postData(`${API_URL}/transactions/new`, tx);
             hideLoader();
-
             let data = await result.json();
-            console.log(await result.json());
-            if (data.MSG && data.MSG.includes("Try to sign in first")) {
-                showAuthError();
-            } else if (data.MSG && data.MSG.includes("Tx pool synced among")) {
-                setMessageToButton("Заявка отправлена", $success);
-                $priceInput.value = NaN;
-                $amountInput.value = NaN;
+            if (data.MSG) {
+                if (data.MSG.includes("Tx pool synced among")) {
+                    setMessageToButton("Заявка отправлена", $success);
+                    $priceInput.value = NaN;
+                    $amountInput.value = NaN;
+                    $totalPrice.innerText = '';
+                    setBalance();
+                    createOpenOrdersTable();
+                } else if (data.MSG.includes("Try to sign in first"))
+                    showAuthError();
+                else if (data.MSG.includes("Spend amount exceeds account balance"))
+                    setMessageToButton("Недостаточно средств", $error);
+                else {
+                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
+                }
+            } else {
+                setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
             }
-            createOpenOrdersTable();
         } catch (e) {
             hideLoader();
-            setMessageToButton("Ошибка на сервере. Пожалуйста, повторите попытку позже.", $error);
+            setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
         }
-
     }
 
     const postData = async (url = '', data = {}) => {
@@ -472,13 +484,15 @@ $(function () {
     }
 
     const setBalance = async () => {
+        balances = [];
+        $tokensListElement.innerText = '';
         try {
             let address = localStorage.getItem('walletAddress');
             let result = await postData(`${API_URL}/wallet/getBalance`, {address});
-            let items = (await result.json())['BALACNES'];
-            items.forEach(item => {
+            balances =  (await result.json())['BALACNES'];
+            balances.forEach(item => {
                 listItem = document.createElement('li');
-                listItem.innerHTML = `${item.balance} ${item.token}`;
+                listItem.innerHTML = `${Math.round(parseFloat(item.balance) * 10**(decimals)) / 10**(decimals)} ${item.token}`;
                 $tokensListElement.appendChild(listItem);
             })
         } catch (e) {
