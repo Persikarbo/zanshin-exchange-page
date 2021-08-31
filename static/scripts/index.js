@@ -79,8 +79,6 @@ $(function () {
         createTable($asksTable);
         createTable($bidsTable);
         setCryptocurrency(defaultCryptocurrencyPair);
-        createOpenOrdersTable();
-        createOrdersHistoryTable();
         // setChartData();
         let walletAddress = localStorage.getItem('walletAddress');
         if (walletAddress === null) {
@@ -192,6 +190,108 @@ $(function () {
         }
     }
 
+    const setDataToOpenOrdersTable = (data) => {
+        let walletAddress = localStorage.getItem('walletAddress');
+        let filteredData = data.tradeOrders.filter(order => {
+            return order.sender === walletAddress
+        })
+        let parsedData = filteredData.map(element => {
+            let direction = null;
+            let date = new Date(element.timestamp*1000)
+            let formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' '
+                + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+            // first token && second token
+            if (element.get === firstCryptocurrency.toLowerCase() && element.send === secondCryptocurrency.toLowerCase()) {
+                direction = 'BUY';
+            }
+            // second token && first token
+            if (element.get === secondCryptocurrency.toLowerCase() && element.send === firstCryptocurrency.toLowerCase()) {
+                direction = 'SELL';
+            }
+            return [formattedDate, element.symbol.toUpperCase(), 'LIMIT', direction, element.price, parseFloat(element.sendVol).toFixed(6)]
+        })
+
+        let infoWrapper = document.getElementById('open-orders-info')
+        if (filteredData.length > 0) {
+            infoWrapper.style.display = 'none';
+            let openOrdersTable = document.getElementById('open-orders-table-body');
+            openOrdersTable.innerHTML = "";
+            for (let i = 0; i < filteredData.length; ++i) {
+                let tableRow = document.createElement('tr');
+                openOrdersTable.appendChild(tableRow);
+                for (let j = 0; j < 6; ++j) {
+                    let tableCell = document.createElement('td');
+                    tableRow.appendChild(tableCell);
+                    tableCell.innerText = parsedData[i][j];
+                }
+            }
+        } else {
+            infoWrapper.style.display = 'block';
+        }
+    }
+
+    const setDataToOrdersHistoryTable = (data) => {
+        let walletAddress = localStorage.getItem('walletAddress');
+        let filteredData = data.chain.map(block => {
+            let filteredTransactions = block.transactions.filter(transaction => {
+                return transaction.tradeTxId !== null && transaction.sender === walletAddress;
+            })
+            return filteredTransactions;
+        })
+
+        let mergedData = [].concat.apply([], filteredData.filter(element => element.length !== 0));
+
+        let parsedData = mergedData.map(element => {
+            let pair = element.symbol;
+            let firstSymbol = pair.substring(0, pair.indexOf('/'));
+            let secondSymbol = pair.substring(pair.indexOf('/') + 1, pair.length);
+            let direction = null;
+            let date = new Date(element.timestamp*1000)
+            let formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' '
+                + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+            if (element.contract === firstSymbol) {
+                direction = 'BUY';
+            }
+            if (element.contract === secondSymbol) {
+                direction = 'SELL';
+            }
+            let status = 'DONE';
+            return [formattedDate, element.symbol.toUpperCase(), 'LIMIT', direction, element.price, status]
+        })
+
+        let infoWrapper = document.getElementById('orders-history-info')
+        if ( mergedData.length > 0) {
+            infoWrapper.style.display = 'none';
+            let ordersHistoryTable = document.getElementById('orders-history-table-body');
+            ordersHistoryTable.innerHTML = "";
+            for (let i = 0; i < mergedData.length; ++i) {
+                let tableRow = document.createElement('tr');
+                ordersHistoryTable.appendChild(tableRow);
+                for (let j = 0; j < 6; ++j) {
+                    if (j === 5 && parsedData[i][j] === 'DONE')
+                    {
+                        let tableCell = document.createElement('td');
+                        tableRow.appendChild(tableCell);
+                        let tableCellText = document.createElement('div');
+                        tableCell.appendChild(tableCellText);
+                        tableCellText.innerText = parsedData[i][j];
+                        tableCellText.style.backgroundColor = '#9FAF90';
+                        tableCellText.style.lineHeight = '12px';
+                        tableCellText.style.padding = '2px 10px';
+                        tableCellText.style.borderRadius = '10px';
+                    }
+                    else {
+                        let tableCell = document.createElement('td');
+                        tableRow.appendChild(tableCell);
+                        tableCell.innerText = parsedData[i][j];
+                    }
+                }
+            }
+        } else {
+            infoWrapper.style.display = 'block';
+        }
+    }
+
     let orderBookData = {
         asks: [],
         bids: [],
@@ -225,8 +325,8 @@ $(function () {
 
         data.forEach(element => {
             let direction = element.direction;
-            if (direction[0] === firstCryptocurrency.toLowerCase() && direction[1] === secondCryptocurrency.toLowerCase()) orderBookData.asks.push({price: element.price, amount: element.amount});
-            if (direction[0] === secondCryptocurrency.toLowerCase() && direction[1] === firstCryptocurrency.toLowerCase()) orderBookData.bids.push({price: element.price, amount: element.amount});
+            if (direction[0] === firstCryptocurrency.toLowerCase() && direction[1] === secondCryptocurrency.toLowerCase()) orderBookData.asks.push({price: element.price, amount: element.amount[0]});
+            if (direction[0] === secondCryptocurrency.toLowerCase() && direction[1] === firstCryptocurrency.toLowerCase()) orderBookData.bids.push({price: element.price, amount: element.amount[1]});
         })
 
         orderBookData.asks.sort(descendingOrder);
@@ -238,8 +338,9 @@ $(function () {
         fetch(`${API_URL}/getTradeOrders`)
             .then(res => res.json())
             .then(data => {
+                setDataToOpenOrdersTable(data);
                 const obdata = data.tradeOrders.map(d => {
-                    return {price: d.price, direction: [d.send, d.get], amount: d.sendVol}
+                    return {price: d.price, direction: [d.send, d.get], amount: [d.sendVol, d.getVol]}
                 });
                 // limit
                 // obdate = obdata.slice(3, obdata.length)
@@ -303,6 +404,7 @@ $(function () {
             .then(res => res.json())
             .then(data => {
                 data.chain.shift();
+                setDataToOrdersHistoryTable(data);
                 const cdata = data.chain.map(block => {
                     let filteredTransactions = block.transactions.filter(transaction => {
                         return (transaction.tradeTxId !== null) && (transaction.contract === firstCryptocurrency.toLowerCase());
@@ -412,7 +514,6 @@ $(function () {
                     $amountInput.value = NaN;
                     $totalPrice.innerText = '';
                     setBalance();
-                    createOpenOrdersTable();
                 } else if (data.MSG.includes("Try to sign in first"))
                     showAuthError();
                 else if (data.MSG.includes("Spend amount exceeds account balance"))
@@ -514,88 +615,5 @@ $(function () {
         if ($accountWrapper.style.opacity === "" || $accountWrapper.style.opacity === "0")
             $accountWrapper.style.opacity = "1.0";
         else $accountWrapper.style.opacity = "0";
-    }
-
-    const createOpenOrdersTable = () => {
-        let walletAddress = localStorage.getItem('walletAddress');
-        fetch(`${API_URL}/getTradeOrders`)
-            .then(res => res.json())
-            .then(data => {
-                let filteredData = data.tradeOrders.filter(order => {
-                    return order.sender === walletAddress
-                })
-                let parsedData = filteredData.map(element => {
-                    let direction = null;
-                    let amount = null;
-                    let date = new Date(element.timestamp*1000)
-                    let formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-                    // first token && second token
-                    if (element.get === firstCryptocurrency.toLowerCase() && element.send === secondCryptocurrency.toLowerCase()) {
-                        direction = 'BUY';
-                    }
-                    // second token && first token
-                    if (element.get === secondCryptocurrency.toLowerCase() && element.send === firstCryptocurrency.toLowerCase()) {
-                        direction = 'SELL';
-                    }
-                    return [formattedDate, element.symbol, 'LIMIT', direction, element.price, parseFloat(element.sendVol).toFixed(6)]
-                })
-
-                if (filteredData.length > 0) {
-                    let openOrdersTable = document.getElementById('open-orders-table');
-
-                    for (let i = 0; i < filteredData.length; ++i) {
-                        let tableRow = document.createElement('tr');
-                        openOrdersTable.appendChild(tableRow);
-                        for (let j = 0; j < 6; ++j) {
-                            let tableCell = document.createElement('td');
-                            tableRow.appendChild(tableCell);
-                            tableCell.innerText = parsedData[i][j];
-                        }
-                    }
-                }
-            })
-    }
-
-    const createOrdersHistoryTable = () => {
-        let walletAddress = localStorage.getItem('walletAddress');
-        fetch(`${API_URL}/chain`)
-            .then(res => res.json())
-            .then(data => {
-                data.chain.shift();
-                let filteredData = data.chain.filter(transaction => {
-                    return transaction.sender === walletAddress
-                })
-                // let parsedData = filteredData.map(element => {
-                //     let direction = null;
-                //     let amount = null;
-                //     let date = new Date(element.timestamp*1000)
-                //     let formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-                //     // first token && second token
-                //     if (element.get === 'btc' && element.send === 'usdt') {
-                //         direction = 'BUY';
-                //         // amount = element.getVol;
-                //     }
-                //     // second token && first token
-                //     if (element.get === 'usdt' && element.send === 'btc') {
-                //         direction = 'SELL';
-                //         // amount = element.sendVol
-                //     }
-                //     return [formattedDate, element.symbol, 'LIMIT', direction, element.price, parseFloat(element.sendVol).toFixed(6)]
-                // })
-                //
-                // if (filteredData.length > 0) {
-                //     let openOrdersTable = document.getElementById('open-orders-table');
-                //
-                //     for (let i = 0; i < filteredData.length; ++i) {
-                //         let tableRow = document.createElement('tr');
-                //         openOrdersTable.appendChild(tableRow);
-                //         for (let j = 0; j < 6; ++j) {
-                //             let tableCell = document.createElement('td');
-                //             tableRow.appendChild(tableCell);
-                //             tableCell.innerText = parsedData[i][j];
-                //         }
-                //     }
-                // }
-            })
     }
 })

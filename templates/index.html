@@ -727,8 +727,23 @@
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
 
+        #orders-history-table tr td{
+            text-align: center;
+            padding: 10px 0;
+        }
+
         #orders-history-table th {
             font-weight: normal;
+        }
+
+        #orders-history-table tr td:nth-last-child(-n+1){
+            float: right;
+            padding-right: 10px;
+        }
+
+        #orders-history-table tr td:nth-child(1) {
+            text-align: left;
+            padding-left: 20px;
         }
 
         #orders-history-table th:nth-last-child(-n+1){
@@ -899,7 +914,7 @@
                         <th scope="col">Количество</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="open-orders-table-body">
                     </tbody>
                 </table>
                 <div class="tables-info" id="open-orders-info">У вас пока нет открытых сделок</div>
@@ -917,7 +932,7 @@
                         <th scope="col">Статус</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="orders-history-table-body">
                     </tbody>
                 </table>
                 <div class="tables-info" id="orders-history-info">У вас пока нет выполненных сделок</div>
