@@ -38,7 +38,7 @@ $(function () {
     const $recipientInput = document.getElementById('recipient-input');
     const $zshAmountInput = document.getElementById('zsh-amount-input');
 
-    const API_URL = 'http://178.176.120.241:5002'; //Alina
+    const API_URL = 'http://0.0.0.0:5000'; //Alina http://178.176.120.241:5002
     //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
     const TRADE_DIRECTIONS = {SELL: 'SELL', BUY: 'BUY'};
     let tradeDirection = TRADE_DIRECTIONS.BUY;
@@ -489,7 +489,8 @@ $(function () {
 
     $btn.onclick = async () => {
         const price = parseFloat($priceInput.value);
-        const amount = parseFloat($amountInput.value);
+        const amountCalc = parseFloat($amountInput.value);
+        const amount = tradeDirection === TRADE_DIRECTIONS.SELL ? amountCalc : amountCalc * price;
 
         if (price === 0 || isNaN(price)) {
             setMessageToButton("Введите цену", $error, $btn, $btnText);
