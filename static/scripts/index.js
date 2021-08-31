@@ -163,12 +163,10 @@ $(function () {
     const numericInputHandler = (firstInputObject, secondInputObject = null, totalObject = null,decimals = 6) => {
         let { error, value } = processNumericValue(firstInputObject.value, decimals);
         firstInputObject.value = value.toString().replace('.', ',');
-        console.log(error, value);
         if (secondInputObject !== null && totalObject !== null) {
             if (error === false) {
                 let firstValue = value;
                 let secondValue = Number(secondInputObject.value.replace(',', '.'));
-                console.log(firstValue * secondValue)
                 if (firstValue >= 0 && secondValue >= 0) totalObject.innerText = (Math.round((firstValue * secondValue) * 10 ** (decimals)) /
                     10 ** (decimals)).toString().replace('.', ',');
             }
@@ -178,7 +176,6 @@ $(function () {
 
     const processNumericValue = (value, decimals) => {
         value = value.replace(/,/g, '.');
-        console.log(value)
         let valueArray = value.split('.');
         if (/[^.,\d]/g.test(value))
             return { error: true, value: value.slice(0, value.length - 1 ) };
