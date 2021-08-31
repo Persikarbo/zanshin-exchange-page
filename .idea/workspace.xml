@@ -30,7 +30,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: orders history table was added" />
+    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: orders history table was added">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/scripts/dynamicCharts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/scripts/dynamicCharts/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/scripts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/scripts/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -223,25 +228,25 @@
       <screen x="0" y="0" width="1440" height="960" />
     </state>
     <state x="501" y="222" key="FileChooserDialogImpl/0.0.1440.960@0.0.1440.960" timestamp="1629703071392" />
-    <state x="313" y="214" key="Vcs.Push.Dialog.v2" timestamp="1630006602201">
+    <state x="313" y="214" key="Vcs.Push.Dialog.v2" timestamp="1630385402112">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="313" y="214" key="Vcs.Push.Dialog.v2/0.0.1440.960@0.0.1440.960" timestamp="1630006602201" />
+    <state x="313" y="214" key="Vcs.Push.Dialog.v2/0.0.1440.960@0.0.1440.960" timestamp="1630385402112" />
     <state x="93" y="93" width="1255" height="775" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1629737298859">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
     <state x="93" y="93" width="1255" height="775" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1440.960@0.0.1440.960" timestamp="1629737298859" />
-    <state x="427" y="215" width="587" height="530" key="find.popup" timestamp="1630329915456">
+    <state x="427" y="215" width="587" height="530" key="find.popup" timestamp="1630400276061">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="427" y="215" width="587" height="530" key="find.popup/0.0.1440.960@0.0.1440.960" timestamp="1630329915456" />
-    <state x="377" y="221" key="run.anything.popup" timestamp="1630345040331">
+    <state x="427" y="215" width="587" height="530" key="find.popup/0.0.1440.960@0.0.1440.960" timestamp="1630400276061" />
+    <state x="377" y="221" key="run.anything.popup" timestamp="1630408362649">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="377" y="221" key="run.anything.popup/0.0.1440.960@0.0.1440.960" timestamp="1630345040331" />
-    <state x="383" y="205" width="672" height="678" key="search.everywhere.popup" timestamp="1630344788673">
+    <state x="377" y="221" key="run.anything.popup/0.0.1440.960@0.0.1440.960" timestamp="1630408362649" />
+    <state x="383" y="205" width="672" height="678" key="search.everywhere.popup" timestamp="1630409774743">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="383" y="205" width="672" height="678" key="search.everywhere.popup/0.0.1440.960@0.0.1440.960" timestamp="1630344788673" />
+    <state x="383" y="205" width="672" height="678" key="search.everywhere.popup/0.0.1440.960@0.0.1440.960" timestamp="1630409774743" />
   </component>
 </project>
