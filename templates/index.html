@@ -529,11 +529,11 @@
             position: static;
             font-family: Open Sans;
             font-size: var(--base-font-size);
-            line-height: 20px;
+            line-height: var(--base-font-size);
             color: #FFFFFF;
         }
 
-        .loader {
+        #loader, #loader-2 {
             margin-left: auto;
             margin-right: auto;
             display: none;
@@ -932,7 +932,7 @@
                                 <div id="commission-info">Комиссия (0,01%): 0 ZSH</div>
                                 <div class="btn-wrapper">
                                     <button class="btn" id="send-btn">
-                                        <div class="loader"></div>
+                                        <div class="loader" id="loader-2"></div>
                                         <div class="btn-text" id="send-btn-text">Отправить ZSH</div>
                                     </button>
                                     <div class="auth-error" id="auth-error-second-tab">
