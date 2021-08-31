@@ -30,11 +30,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: add account window">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/scripts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/scripts/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-    </list>
+    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: orders history table was added" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -180,7 +176,14 @@
       <option name="project" value="LOCAL" />
       <updated>1630006582959</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="feat: orders history table was added">
+      <created>1630385346060</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1630385346060</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -208,7 +211,8 @@
     <MESSAGE value="feat: volume chart" />
     <MESSAGE value="feat: add account window" />
     <MESSAGE value="feat: account window design fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: account window design fixes" />
+    <MESSAGE value="feat: orders history table was added" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: orders history table was added" />
   </component>
   <component name="WindowStateProjectService">
     <state x="347" y="159" key="#Inspections" timestamp="1629721403086">
