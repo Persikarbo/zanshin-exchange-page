@@ -161,7 +161,7 @@ $(function () {
     // }
 
     const numericInputHandler = (firstInputObject, secondInputObject = null, totalObject = null,decimals = 6) => {
-        let { error, value } = processNumericValue(firstInputObject.value);
+        let { error, value } = processNumericValue(firstInputObject.value, decimals);
         firstInputObject.value = value.toString().replace('.', ',');
         console.log(error, value);
         if (secondInputObject !== null && totalObject !== null) {
@@ -178,6 +178,7 @@ $(function () {
 
     const processNumericValue = (value, decimals) => {
         value = value.replace(/,/g, '.');
+        console.log(value)
         let valueArray = value.split('.');
         if (/[^.,\d]/g.test(value))
             return { error: true, value: value.slice(0, value.length - 1 ) };
