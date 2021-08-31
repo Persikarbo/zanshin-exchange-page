@@ -137,20 +137,54 @@ $(function () {
 
     const decimals = 6;
 
-    $priceInput.oninput = () => {
-        let price = Number($priceInput.value);
-        $priceInput.value = Math.round((price) * 1000000) / 1000000;
-        let amount = Number($amountInput.value);
-        if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10 ** (decimals)) /
-            10 ** (decimals)).toString().replace('.', ',');
+    // $priceInput.oninput = () => {
+    //     // returnOldButton();
+    //     // let price = Number($priceInput.value);
+    //     // $priceInput.value = Math.round((price) * 1000000) / 1000000;
+    //     // let amount = Number($amountInput.value);
+    //     // if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10 ** (decimals)) /
+    //     //     10 ** (decimals)).toString().replace('.', ',');
+    // }
+
+    $priceInput.oninput = () => numericInputHandler($priceInput, $amountInput, $totalPrice, decimals);
+
+    $amountInput.oninput = () => numericInputHandler($amountInput, $priceInput, $totalPrice, decimals);
+
+    // $amountInput.oninput = () => {
+    //     // returnOldButton();
+    //     let amount = Number($amountInput.value);
+    //     $amountInput.value = Math.round(amount * 10 ** (decimals)) / 10 ** (decimals);
+    //     let price = Number($priceInput.value);
+    //     if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10 ** (decimals)) /
+    //         10 ** (decimals)).toString().replace('.', ',');
+    //
+    //
+    // }
+
+    const numericInputHandler = (firstInputObject, secondInputObject = null, totalObject = null,decimals = 6) => {
+        let { error, value } = processNumericValue(firstInputObject.value, decimals);
+        firstInputObject.value = value.toString().replace('.', ',');
+        if (secondInputObject !== null && totalObject !== null) {
+            if (error === false) {
+                let firstValue = value;
+                let secondValue = Number(secondInputObject.value.replace(',', '.'));
+                if (firstValue >= 0 && secondValue >= 0) totalObject.innerText = (Math.round((firstValue * secondValue) * 10 ** (decimals)) /
+                    10 ** (decimals)).toString().replace('.', ',');
+            }
+        }
+
     }
 
-    $amountInput.oninput = () => {
-        let amount = Number($amountInput.value);
-        $amountInput.value = Math.round(amount * 10 ** (decimals)) / 10 ** (decimals);
-        let price = Number($priceInput.value);
-        if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10 ** (decimals)) /
-            10 ** (decimals)).toString().replace('.', ',');
+    const processNumericValue = (value, decimals) => {
+        value = value.replace(/,/g, '.');
+        let valueArray = value.split('.');
+        if (/[^.,\d]/g.test(value))
+            return { error: true, value: value.slice(0, value.length - 1 ) };
+        if (valueArray.length > 2)
+            return { error: true, value: value.slice(0, value.length - 1 ) };
+        if (valueArray[1] && valueArray[1].length > decimals)
+            return { error: false, value: value.slice(0, value.length - 1 ) };
+        return{ error: false, value };
     }
 
     $zshAmountInput.oninput = () => {
