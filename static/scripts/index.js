@@ -155,7 +155,7 @@ $(function () {
 
     $zshAmountInput.oninput = () => {
         const $commissionInfo = document.getElementById('commission-info');
-        let commission = Number($zshAmountInput.value) * 0.0001;
+        let commission = Math.round((Number($zshAmountInput.value) * 0.0001)*10**6)/10**6;
         $commissionInfo.innerText = `Комиссия (0,01%): ${commission} ZSH`;
     }
 
@@ -553,7 +553,7 @@ $(function () {
                     $priceInput.value = NaN;
                     $amountInput.value = NaN;
                     $totalPrice.innerText = '';
-                    setBalance();
+                    await setBalance();
                 } else if (data.MSG.includes("Try to sign in first"))
                     showAuthError();
                 else if (data.MSG.includes("Spend amount exceeds account balance"))
@@ -576,7 +576,7 @@ $(function () {
             method: 'POST',
             body: JSON.stringify(data)
         });
-        return await response;
+        return response;
     }
 
     const showLoader = () => {
@@ -690,13 +690,14 @@ $(function () {
             return;
         }
 
+
         let tx = {
             'type': 'common',
             'symbol': 'zsh',
             'contract': null,
             'sender': walletAddress,
             'recipient': $recipientInput.value,
-            'sendAmount': parseFloat($zshAmountInput.value),
+            'sendAmount': amount,
             'comissionAmount': 0.01,
         }
         try {
@@ -704,26 +705,26 @@ $(function () {
             let result = await postData(`${API_URL}/transactions/new`, tx);
             hideLoader();
             let data = await result.json();
+            console.log(data);
             if (data.MSG) {
                 if (data.MSG.includes("Tx pool synced among")) {
                     setMessageToButton("Заявка отправлена", $success, $sendBtn, $sendBtnText);
-                    $priceInput.value = NaN;
-                    $amountInput.value = NaN;
-                    $totalPrice.innerText = '';
-                    setBalance();
+                    $recipientInput.value = '';
+                    $zshAmountInput.value = NaN;
+                    await setBalance();
                 } else if (data.MSG.includes("Try to sign in first"))
                     showAuthError();
                 else if (data.MSG.includes("Spend amount exceeds account balance"))
                     setMessageToButton("Недостаточно средств", $error, $sendBtn, $sendBtnText);
                 else {
-                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error, $sendBtn, $sendBtnText);
+                    setMessageToButton("Ошибка на сервере 1. Пожалуйста повторите попытку позже.", $error, $sendBtn, $sendBtnText);
                 }
             } else {
-                setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error, $sendBtn, $sendBtnText);
+                setMessageToButton("Ошибка на сервере 2. Пожалуйста повторите попытку позже.", $error, $sendBtn, $sendBtnText);
             }
         } catch (e) {
             hideLoader();
-            setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error, $sendBtn, $sendBtnText);
+            setMessageToButton("Ошибка на сервере 3. Пожалуйста повторите попытку позже.", $error, $sendBtn, $sendBtnText);
         }
         setTimeout(returnOldButton, 2000);
     }

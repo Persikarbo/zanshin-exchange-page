@@ -30,12 +30,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: add send ZSH tab">
+    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: common tx endpoints were added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/scripts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/scripts/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sign_up.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sign_up.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,6 +108,7 @@
       <workItem from="1630305311090" duration="6750000" />
       <workItem from="1630317525494" duration="71000" />
       <workItem from="1630318504409" duration="2615000" />
+      <workItem from="1630416618724" duration="2509000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1629703298500</created>
@@ -196,7 +194,14 @@
       <option name="project" value="LOCAL" />
       <updated>1630410711759</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="feat: common tx endpoints were added">
+      <created>1630415876177</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1630415876177</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -226,7 +231,8 @@
     <MESSAGE value="feat: account window design fixes" />
     <MESSAGE value="feat: orders history table was added" />
     <MESSAGE value="feat: add send ZSH tab" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add send ZSH tab" />
+    <MESSAGE value="feat: common tx endpoints were added" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: common tx endpoints were added" />
   </component>
   <component name="WindowStateProjectService">
     <state x="347" y="159" key="#Inspections" timestamp="1629721403086">
@@ -237,10 +243,10 @@
       <screen x="0" y="0" width="1440" height="960" />
     </state>
     <state x="501" y="222" key="FileChooserDialogImpl/0.0.1440.960@0.0.1440.960" timestamp="1629703071392" />
-    <state x="313" y="214" key="Vcs.Push.Dialog.v2" timestamp="1630410727849">
+    <state x="313" y="214" key="Vcs.Push.Dialog.v2" timestamp="1630415886717">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="313" y="214" key="Vcs.Push.Dialog.v2/0.0.1440.960@0.0.1440.960" timestamp="1630410727849" />
+    <state x="313" y="214" key="Vcs.Push.Dialog.v2/0.0.1440.960@0.0.1440.960" timestamp="1630415886717" />
     <state x="93" y="93" width="1255" height="775" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1629737298859">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
