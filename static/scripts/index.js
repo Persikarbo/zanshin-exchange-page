@@ -103,6 +103,7 @@ $(function () {
         createTable($asksTable);
         createTable($bidsTable);
         setCryptocurrency(defaultCryptocurrencyPair);
+        setChartData();
         let walletAddress = localStorage.getItem('walletAddress');
         if (walletAddress === null) {
             showAuthError();
@@ -450,17 +451,105 @@ $(function () {
             .catch(err => console.log(err))
     }
 
-    // const setChartData = () => {
-    //     fetch('https://api.binance.com/api/v3/klines?symbol=' + $currentPairLabel.innerText.replace('/', '') + '&interval=15m&limit=1000')
-    //         .then(res => res.json())
-    //                 .then(data => {
-    //                     const cdata = data.map(d => {
-    //                         return {time:d[0]/1000,open:parseFloat(d[1]),high:parseFloat(d[2]),low:parseFloat(d[3]),close:parseFloat(d[4])}
-    //                     });
-    //                     candleSeries.setData(cdata);
-    //                 })
-    //                 .catch(err => console.log(err))
-    //     }
+    const setChartData = () => {
+        fetch(`${API_URL}/chain`)
+            .then(res => res.json())
+            .then(data => {
+                data.chain.shift();
+                setDataToOrdersHistoryTable(data);
+                const cdata = data.chain.map(block => {
+                    let filteredTransactions = block.transactions.filter(transaction => {
+                        return (transaction.tradeTxId !== null) && (transaction.contract === firstCryptocurrency.toLowerCase());
+                    })
+                    let prices = filteredTransactions.map(transaction => {
+                        return transaction.price;
+                    })
+                    let volume = filteredTransactions.map(transaction => {
+                        return transaction.sendAmount;
+                    })
+                    return {time: new Date(block.timestamp * 1000).getTime(), prices: prices, volume: volume}
+                })
+
+                let interval = 5; //minutes
+                let currentDate = new Date();
+                let intervalStart = new Date();
+
+                intervalStart.setMinutes(currentDate.getMinutes() - interval); // One day interval
+                let minutes = (Math.round(intervalStart.getMinutes()/interval) * interval) % 60;
+                intervalStart.setMinutes(minutes);
+                intervalStart.setSeconds(0);
+                intervalStart.setMilliseconds(0);
+
+                let filteredData = cdata.filter(element => {
+                    return element.time < intervalStart.getTime() && element.prices.length !== 0 && element.volume.length !== 0
+                })
+
+                let intervalEnd = new Date(intervalStart);
+                intervalStart.setMinutes(intervalStart.getMinutes() - interval);
+                let reversedFilteredData = filteredData.reverse();
+                let history = [[]];
+
+                let i = 0;
+                let j = 0;
+                history[i].push(new Date(intervalStart));
+                while (j < reversedFilteredData.length) {
+                    let item = reversedFilteredData[j];
+                    if (item.time >= intervalStart.getTime() && item.time < intervalEnd.getTime())
+                    {
+                        if (history[i].length === 0) {
+                            history[i].push(new Date(intervalStart));
+                        }
+                        history[i].push(item);
+                        j++;
+                    }
+                    else if (item.time < intervalStart.getTime()) {
+                        intervalEnd = new Date(intervalStart);
+                        intervalStart.setMinutes(intervalStart.getMinutes() - interval);
+                        history.push([]);
+                        i++;
+                        history[i].push(new Date(intervalStart));
+                    }
+                }
+
+                let candleSeriesHistoryData = [];
+                let volumeSeriesHistoryData = [];
+
+                history.forEach(item => {
+                    let timestamp = new Date(item[0]);
+                    if (item.length > 1) {
+                        item.shift()
+                        let open = item[0].prices[0];
+                        let lastTransaction = item[item.length - 1];
+                        let close = lastTransaction.prices[lastTransaction.prices.length - 1];
+                        let high = null;
+                        let low = null;
+                        let totalVolume = null;
+
+                        item.forEach(element => {
+                            element.prices.forEach(price => {
+                                if (low === null || price < low) low = price;
+                                if (high === null || price > high) high = price;
+                            })
+                        })
+                        item.forEach(element => {
+                            element.volume.forEach(v => {
+                                totalVolume += v;
+                            })
+                        })
+
+                        candleSeriesHistoryData.push({time: timestamp.getTime() / 1000, open: open, high: high, low: low, close: close})
+                        volumeSeriesHistoryData.push({time: timestamp.getTime() / 1000, value: totalVolume});
+                    } else {
+                        candleSeriesHistoryData.push({time: timestamp.getTime() / 1000, open: NaN, high: NaN, low: NaN, close: NaN})
+                        volumeSeriesHistoryData.push({time: timestamp.getTime() / 1000, value: 0});
+                    }
+                })
+
+                candleSeries.setData(candleSeriesHistoryData.reverse());
+                volumeSeries.setData(volumeSeriesHistoryData.reverse());
+            })
+            .catch(err => console.log(err))
+    }
 
     const updateChartData = () => {
         fetch(`${API_URL}/chain`)
@@ -483,32 +572,22 @@ $(function () {
 
                 let interval = 5; //minutes
                 let currentDate = new Date();
-                let intervalStart = new Date();
-                let intervalEnd = currentDate;
+                let minutes = (Math.ceil(currentDate.getMinutes() /interval) * interval) % 60;
+                currentDate.setMinutes(minutes);
+                currentDate.setSeconds(0);
+                currentDate.setMilliseconds(0);
+                let intervalStart = new Date(currentDate);
                 intervalStart.setMinutes(currentDate.getMinutes() - interval); // One day interval
                 let filteredData = cdata.filter(element => {
-                    return element.prices.length !== 0 && element.volume.length !== 0
+                    return element.time >= intervalStart.getTime() && element.time < currentDate.getTime() && element.prices.length !== 0 && element.volume.length !== 0
                 })
-
-                let history = [[]];
-                let i = 0;
-                filteredData.forEach(item => {
-                    if (item.time > intervalStart && item.time < intervalEnd)
-                        history[i].push()
-                })
-
-                // let filteredData = cdata.filter(element => {
-                //     console.log(element.time > chartIntervalStart.getTime())
-                //     return element.time > chartIntervalStart.getTime() && element.prices.length !== 0 && element.volume.length !== 0
-                // })
                 if (filteredData.length !== 0) {
                     let open = filteredData[0].prices[0];
                     let lastTransaction = filteredData[filteredData.length - 1];
-                    let lastPrice = lastTransaction.prices[lastTransaction.prices.length - 1];
-                    let close = lastPrice;
+                    let close = lastTransaction.prices[lastTransaction.prices.length - 1];
                     let high = null;
                     let low = null;
-                    let totalVolume = null;
+                    let totalVolume = 0;
 
                     filteredData.forEach(element => {
                         element.prices.forEach(price => {
@@ -521,13 +600,7 @@ $(function () {
                             totalVolume += v;
                         })
                     })
-                    let minutes = (Math.round(intervalStart.getMinutes()/interval) * interval) % 60;
-                    console.log(minutes);
-                    intervalStart.setMinutes(minutes);
-                    intervalStart.setSeconds(0);
-                    intervalStart.setMilliseconds(0);
                     let currentData = {time: intervalStart.getTime() / 1000, open: open, high: high, low: low, close: close};
-                    console.log(currentData);
                     candleSeries.update(currentData);
                     let currentDataVolume = {time: intervalStart.getTime() / 1000, value: totalVolume};
                     volumeSeries.update(currentDataVolume);
@@ -542,7 +615,7 @@ $(function () {
     $btn.onclick = async () => {
         const price = parseFloat($priceInput.value.replace(',', '.'));
         const amountCalc = parseFloat($amountInput.value.replace(',', '.'));
-        console.log(amountCalc)
+
         const amount = tradeDirection === TRADE_DIRECTIONS.SELL ? amountCalc : amountCalc * price;
 
         if (price === 0 || isNaN(price)) {
@@ -593,13 +666,11 @@ $(function () {
             'getVol': tradeDirection === TRADE_DIRECTIONS.BUY ? amount / price : price * amount,
             'comissionAmount': 2,
         }
-        console.log(tx)
         try {
             showLoader();
             let result = await postData(`${API_URL}/transactions/new`, tx);
             hideLoader();
             let data = await result.json();
-            console.log(data)
             if (data.MSG) {
                 if (data.MSG.includes("Tx pool synced among")) {
                     setMessageToButton("Заявка отправлена", $success, $btn, $btnText);
@@ -768,7 +839,7 @@ $(function () {
             let result = await postData(`${API_URL}/transactions/new`, tx);
             hideLoader();
             let data = await result.json();
-            console.log(data);
+
             if (data.MSG) {
                 if (data.MSG.includes("Tx pool synced among")) {
                     setMessageToButton("Заявка отправлена", $success, $sendBtn, $sendBtnText);

@@ -23,20 +23,32 @@ const candleSeriesProperties = {
         },
     },
     rightPriceScale: {
-        // autoScale: true,
+        visible: true,
         borderColor: 'rgba(0, 0, 0, 0.05)',
+        scaleMargins: {
+            bottom: 0.2,
+        },
+    },
+    leftPriceScale: {
+        visible: true,
+        borderColor: 'rgba(0, 0, 0, 0.05)',
+        scaleMargins: {
+            top: 0.9,
+            bottom: 0,
+        },
     },
     timeScale: {
         borderVisible: false,
         tickMarkFormatter: (time) => {
             const date = new Date(time*1000);
-            return date.getMonth() + 1 + '/' + date.getDate(); //+ ' ' + date.getHours() + ':' + (date.getMinutes() < 15 ? '0' + date.getMinutes() : date.getMinutes()); //Shows interval beginning
+            return date.getMonth() + 1 + '/' + date.getDate() + ' ' + date.getHours() + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()); //Shows interval beginning
         },
     },
 }
 
 const chart = LightweightCharts.createChart(chartContainer,candleSeriesProperties);
 const candleSeries = chart.addCandlestickSeries({
+    priceScaleId: 'right',
     // upColor: '#A9D8B8',
     // downColor: '#FE938C',
     // borderDownColor: '#FE938C',
@@ -64,11 +76,7 @@ const volumeSeries = chart.addHistogramSeries({
     priceFormat: {
         type: 'volume',
     },
-    priceScaleId: '',
-    scaleMargins: {
-        top: 0.8,
-        bottom: 0,
-    },
+    priceScaleId: 'left',
 });
 
 const toolTipWidth = 60; //100
