@@ -136,29 +136,9 @@ $(function () {
 
     const decimals = 6;
 
-    // $priceInput.oninput = () => {
-    //     // returnOldButton();
-    //     // let price = Number($priceInput.value);
-    //     // $priceInput.value = Math.round((price) * 1000000) / 1000000;
-    //     // let amount = Number($amountInput.value);
-    //     // if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10 ** (decimals)) /
-    //     //     10 ** (decimals)).toString().replace('.', ',');
-    // }
-
     $priceInput.oninput = () => numericInputHandler($priceInput, decimals, $amountInput, $totalPrice );
 
     $amountInput.oninput = () => numericInputHandler($amountInput, decimals, $priceInput, $totalPrice );
-
-    // $amountInput.oninput = () => {
-    //     // returnOldButton();
-    //     let amount = Number($amountInput.value);
-    //     $amountInput.value = Math.round(amount * 10 ** (decimals)) / 10 ** (decimals);
-    //     let price = Number($priceInput.value);
-    //     if (price > 0 && amount > 0) $totalPrice.innerText = (Math.round((price * amount) * 10 ** (decimals)) /
-    //         10 ** (decimals)).toString().replace('.', ',');
-    //
-    //
-    // }
 
     const numericInputHandler = (firstInputObject, decimals = 6, secondInputObject = null, totalObject = null) => {
         let { error, value } = processNumericValue(firstInputObject.value, decimals);
@@ -253,6 +233,17 @@ $(function () {
         }
     }
 
+    const getFormattedDate = (date) => {
+        return  setZeroAhead(date.getDate()) + '/' + setZeroAhead(date.getMonth() + 1) + '/' + setZeroAhead(date.getFullYear()) + ' '
+            + setZeroAhead(date.getHours()) + ':' + setZeroAhead(date.getMinutes())  + ':' + setZeroAhead(date.getSeconds());
+    }
+
+    const setZeroAhead = (value) => {
+        if (value < 10)
+            return `0${value}`;
+        else return value;
+    };
+
     const setDataToOpenOrdersTable = (data) => {
         let walletAddress = localStorage.getItem('walletAddress');
         let filteredData = data.tradeOrders.filter(order => {
@@ -261,8 +252,7 @@ $(function () {
         let parsedData = filteredData.map(element => {
             let direction = null;
             let date = new Date(element.timestamp*1000)
-            let formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' '
-                + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+            let formattedDate = getFormattedDate(date);
             // first token && second token
             if (element.get === firstCryptocurrency.toLowerCase() && element.send === secondCryptocurrency.toLowerCase()) {
                 direction = 'BUY';
@@ -310,8 +300,7 @@ $(function () {
             let secondSymbol = pair.substring(pair.indexOf('/') + 1, pair.length);
             let direction = null;
             let date = new Date(element.timestamp*1000)
-            let formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' '
-                + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+            let formattedDate = getFormattedDate(date);
             if (element.contract === firstSymbol) {
                 direction = 'BUY';
             }
@@ -603,8 +592,8 @@ $(function () {
             if (data.MSG) {
                 if (data.MSG.includes("Tx pool synced among")) {
                     setMessageToButton("Заявка отправлена", $success, $btn, $btnText);
-                    $priceInput.value = 0;
-                    $amountInput.value = 0;
+                    $priceInput.value = '';
+                    $amountInput.value = '';
                     $totalPrice.innerText = '';
                     await setBalance();
                 } else if (data.MSG.includes("Try to sign in first"))
@@ -773,7 +762,7 @@ $(function () {
                 if (data.MSG.includes("Tx pool synced among")) {
                     setMessageToButton("Заявка отправлена", $success, $sendBtn, $sendBtnText);
                     $recipientInput.value = '';
-                    $zshAmountInput.value = 0;
+                    $zshAmountInput.value = '';
                     await setBalance();
                 } else if (data.MSG.includes("Try to sign in first"))
                     showAuthError();

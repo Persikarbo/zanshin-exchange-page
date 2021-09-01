@@ -30,7 +30,7 @@ const candleSeriesProperties = {
         borderVisible: false,
         tickMarkFormatter: (time) => {
             const date = new Date(time*1000);
-            return date.getMonth() + 1 + '/' + date.getDate(); //+ ' ' + date.getHours() + ':' + (date.getMinutes() < 15 ? '0' + date.getMinutes() : date.getMinutes()); //Shows interval beginning
+            return (date.getDate() < 10 ? `0${date.getDate()}`: date.getDate()).toString() + '/' + ((date.getMonth() + 1) < 10 ?  `0${(date.getMonth() + 1)}` : (date.getMonth() + 1)).toString() ; //+ ' ' + date.getHours() + ':' + (date.getMinutes() < 15 ? '0' + date.getMinutes() : date.getMinutes()); //Shows interval beginning
         },
     },
 }
