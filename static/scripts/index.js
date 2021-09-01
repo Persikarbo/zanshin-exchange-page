@@ -39,8 +39,8 @@ $(function () {
     const $recipientInput = document.getElementById('recipient-input');
     const $zshAmountInput = document.getElementById('zsh-amount-input');
 
-    // const API_URL = 'http://0.0.0.0:5000';
-    const API_URL = 'http://178.176.120.241:5002'; // Alina
+    const API_URL = 'http://192.168.0.100:5000';
+    //const API_URL = 'http://178.176.120.241:5000'; // Alina
     //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
     const TRADE_DIRECTIONS = {SELL: 'SELL', BUY: 'BUY'};
     let tradeDirection = TRADE_DIRECTIONS.BUY;
@@ -146,9 +146,9 @@ $(function () {
     //     //     10 ** (decimals)).toString().replace('.', ',');
     // }
 
-    $priceInput.oninput = () => numericInputHandler($priceInput, $amountInput, $totalPrice, decimals);
+    $priceInput.oninput = () => numericInputHandler($priceInput, decimals, $amountInput, $totalPrice );
 
-    $amountInput.oninput = () => numericInputHandler($amountInput, $priceInput, $totalPrice, decimals);
+    $amountInput.oninput = () => numericInputHandler($amountInput, decimals, $priceInput, $totalPrice );
 
     // $amountInput.oninput = () => {
     //     // returnOldButton();
@@ -161,7 +161,7 @@ $(function () {
     //
     // }
 
-    const numericInputHandler = (firstInputObject, secondInputObject = null, totalObject = null,decimals = 6) => {
+    const numericInputHandler = (firstInputObject, decimals = 6, secondInputObject = null, totalObject = null) => {
         let { error, value } = processNumericValue(firstInputObject.value, decimals);
         firstInputObject.value = value.toString().replace('.', ',');
         if (secondInputObject !== null && totalObject !== null) {
@@ -189,8 +189,10 @@ $(function () {
 
     $zshAmountInput.oninput = () => {
         const $commissionInfo = document.getElementById('commission-info');
-        let commission = Math.round((Number($zshAmountInput.value) * 0.0001)*10**6)/10**6;
+        let commission = Math.round((parseFloat($zshAmountInput.value.replace(',','.')) * 0.0001)*10**6)/10**6;
         $commissionInfo.innerText = `Комиссия (0,01%): ${commission} ZSH`;
+
+        numericInputHandler($zshAmountInput, decimals);
     }
 
     const makeList = () => {
@@ -523,8 +525,9 @@ $(function () {
     let refreshOrderBook = setInterval(orderBook, 5000);
 
     $btn.onclick = async () => {
-        const price = parseFloat($priceInput.value);
-        const amountCalc = parseFloat($amountInput.value);
+        const price = parseFloat($priceInput.value.replace(',', '.'));
+        const amountCalc = parseFloat($amountInput.value.replace(',', '.'));
+        console.log(amountCalc)
         const amount = tradeDirection === TRADE_DIRECTIONS.SELL ? amountCalc : amountCalc * price;
 
         if (price === 0 || isNaN(price)) {
@@ -532,7 +535,7 @@ $(function () {
             setTimeout(returnOldButton, 2000);
             return;
         }
-        if (amount === 0 || isNaN(amount)) {
+        if (amount === 0 || isNaN(amountCalc)) {
             setMessageToButton("Введите количество", $error, $btn, $btnText);
             setTimeout(returnOldButton, 2000);
             return;
@@ -550,7 +553,6 @@ $(function () {
         // }
 
         let tokenBalance = balances.filter(item => item.token === symbolToSend.toUpperCase())[0];
-        console.log(tokenBalance);
 
         if (tokenBalance !== undefined && amount > tokenBalance.balance) {
             setMessageToButton("Недостаточно средств", $error, $btn, $btnText);
@@ -574,18 +576,20 @@ $(function () {
             'sendVol': amount,
             'get': symbolToGet,
             'getVol': tradeDirection === TRADE_DIRECTIONS.BUY ? amount / price : price * amount,
-            'comissionAmount': 0.01,
+            'comissionAmount': 2,
         }
+        console.log(tx)
         try {
             showLoader();
             let result = await postData(`${API_URL}/transactions/new`, tx);
             hideLoader();
             let data = await result.json();
+            console.log(data)
             if (data.MSG) {
                 if (data.MSG.includes("Tx pool synced among")) {
                     setMessageToButton("Заявка отправлена", $success, $btn, $btnText);
-                    $priceInput.value = NaN;
-                    $amountInput.value = NaN;
+                    $priceInput.value = 0;
+                    $amountInput.value = 0;
                     $totalPrice.innerText = '';
                     await setBalance();
                 } else if (data.MSG.includes("Try to sign in first"))
@@ -658,7 +662,17 @@ $(function () {
         $sendBtnText.innerText = 'Отправить ZSH';
     }
 
-    $exitBtn.onclick = () => {
+    $exitBtn.onclick = async () => {
+        try {
+            let result = await fetch(`${API_URL}/wallet/logout`);
+            let data = await result.json();
+            if (data.MSG)
+                if (data.MSG === true)
+                    console.log('success')
+        }
+        catch (e){
+            console.log(e);
+        }
         localStorage.removeItem("walletAddress");
         $accButtons.style.display = "none";
         $authButtons.style.display = "flex";
@@ -689,7 +703,7 @@ $(function () {
 
     $sendBtn.onclick = async () => {
         const recipient = $recipientInput.value;
-        const amount = parseFloat($zshAmountInput.value);
+        const amount = parseFloat($zshAmountInput.value.replace(',','.'));
 
         if (recipient.length === 0) {
             setMessageToButton("Укажите получателя", $error, $sendBtn, $sendBtnText);
@@ -732,7 +746,7 @@ $(function () {
             'sender': walletAddress,
             'recipient': $recipientInput.value,
             'sendAmount': amount,
-            'comissionAmount': 0.01,
+            'comissionAmount': 2,
         }
         try {
             showLoader();
@@ -744,7 +758,7 @@ $(function () {
                 if (data.MSG.includes("Tx pool synced among")) {
                     setMessageToButton("Заявка отправлена", $success, $sendBtn, $sendBtnText);
                     $recipientInput.value = '';
-                    $zshAmountInput.value = NaN;
+                    $zshAmountInput.value = 0;
                     await setBalance();
                 } else if (data.MSG.includes("Try to sign in first"))
                     showAuthError();

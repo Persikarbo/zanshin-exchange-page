@@ -259,8 +259,8 @@
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script>
     $(function () {
-        // const API_URL = "http://0.0.0.0:5000";
-        const API_URL = 'http://178.176.120.241:5002'; // Alina
+        const API_URL = 'http://192.168.0.100:5000';
+        //const API_URL = 'http://178.176.120.241:5000'; // Alina
         //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
         const $main = "#4C5C97";
         const $error = "#E27B7B";
@@ -281,7 +281,7 @@
                 let result = await postData(API_URL + "/wallet/login", {password});
                 hideLoader();
                 if (result.status === 500)
-                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
+                    setMessageToButton("Пожалуйста, повторите попытку позже.", $error);
                 else {
                     result = await result.json()
                     if (result.MSG !== true && result.MSG.includes("Wrong password"))
@@ -294,7 +294,7 @@
                 }
             } catch (e) {
                 hideLoader();
-                setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error);
+                setMessageToButton("Пожалуйста, повторите попытку позже.", $error);
             }
 
 
@@ -338,7 +338,7 @@
                 cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
                 body: JSON.stringify(data) // body data type must match "Content-Type" header
             });
-            return await response; // parses JSON response into native JavaScript objects
+            return response; // parses JSON response into native JavaScript objects
         }
     })
 </script>
