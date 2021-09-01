@@ -39,8 +39,8 @@ $(function () {
     const $recipientInput = document.getElementById('recipient-input');
     const $zshAmountInput = document.getElementById('zsh-amount-input');
 
-    const API_URL = 'http://192.168.0.100:5000';
-    //const API_URL = 'http://178.176.120.241:5000'; // Alina
+    // const API_URL = 'http://192.168.0.100:5000';
+    const API_URL = 'http://178.176.120.241:5002'; // Alina
     //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
     const TRADE_DIRECTIONS = {SELL: 'SELL', BUY: 'BUY'};
     let tradeDirection = TRADE_DIRECTIONS.BUY;
@@ -103,7 +103,6 @@ $(function () {
         createTable($asksTable);
         createTable($bidsTable);
         setCryptocurrency(defaultCryptocurrencyPair);
-        // setChartData();
         let walletAddress = localStorage.getItem('walletAddress');
         if (walletAddress === null) {
             showAuthError();
@@ -482,12 +481,26 @@ $(function () {
                     return {time: new Date(block.timestamp * 1000).getTime(), prices: prices, volume: volume}
                 })
 
+                let interval = 5; //minutes
                 let currentDate = new Date();
-                let chartIntervalStart = new Date();
-                chartIntervalStart.setDate(currentDate.getDate() - 7); // One day interval
+                let intervalStart = new Date();
+                let intervalEnd = currentDate;
+                intervalStart.setMinutes(currentDate.getMinutes() - interval); // One day interval
                 let filteredData = cdata.filter(element => {
-                    return element.time > chartIntervalStart.getTime() && element.prices.length !== 0 && element.volume.length !== 0
+                    return element.prices.length !== 0 && element.volume.length !== 0
                 })
+
+                let history = [[]];
+                let i = 0;
+                filteredData.forEach(item => {
+                    if (item.time > intervalStart && item.time < intervalEnd)
+                        history[i].push()
+                })
+
+                // let filteredData = cdata.filter(element => {
+                //     console.log(element.time > chartIntervalStart.getTime())
+                //     return element.time > chartIntervalStart.getTime() && element.prices.length !== 0 && element.volume.length !== 0
+                // })
                 if (filteredData.length !== 0) {
                     let open = filteredData[0].prices[0];
                     let lastTransaction = filteredData[filteredData.length - 1];
@@ -508,13 +521,15 @@ $(function () {
                             totalVolume += v;
                         })
                     })
-                    currentDate.setHours(0);
-                    currentDate.setMinutes(0);
-                    currentDate.setSeconds(0);
-                    currentDate.setMilliseconds(0);
-                    let currentData = {time: currentDate.getTime() / 1000, open: open, high: high, low: low, close: close};
+                    let minutes = (Math.round(intervalStart.getMinutes()/interval) * interval) % 60;
+                    console.log(minutes);
+                    intervalStart.setMinutes(minutes);
+                    intervalStart.setSeconds(0);
+                    intervalStart.setMilliseconds(0);
+                    let currentData = {time: intervalStart.getTime() / 1000, open: open, high: high, low: low, close: close};
+                    console.log(currentData);
                     candleSeries.update(currentData);
-                    let currentDataVolume = {time: currentDate.getTime() / 1000, value: totalVolume};
+                    let currentDataVolume = {time: intervalStart.getTime() / 1000, value: totalVolume};
                     volumeSeries.update(currentDataVolume);
                 }
             })
