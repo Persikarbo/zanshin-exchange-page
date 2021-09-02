@@ -38,8 +38,10 @@ $(function () {
     const $sendBtnText = document.getElementById('send-btn-text');
     const $recipientInput = document.getElementById('recipient-input');
     const $zshAmountInput = document.getElementById('zsh-amount-input');
+    const $openOrdersContent = document.getElementById('open-orders-content');
+    const $ordersHistoryContent = document.getElementById('orders-history-content');
 
-    // const API_URL = 'http://192.168.0.100:5000';
+    //const API_URL = 'http://192.168.0.100:5000';
     const API_URL = 'http://178.176.120.241:5002'; // Alina
     //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
     const TRADE_DIRECTIONS = {SELL: 'SELL', BUY: 'BUY'};
@@ -268,6 +270,7 @@ $(function () {
         let infoWrapper = document.getElementById('open-orders-info')
         if (filteredData.length > 0) {
             infoWrapper.style.display = 'none';
+            $openOrdersContent.style.display = 'block';
             let openOrdersTable = document.getElementById('open-orders-table-body');
             openOrdersTable.innerHTML = "";
             for (let i = 0; i < filteredData.length; ++i) {
@@ -280,6 +283,7 @@ $(function () {
                 }
             }
         } else {
+            $openOrdersContent.style.display = 'none';
             infoWrapper.style.display = 'block';
         }
     }
@@ -315,6 +319,7 @@ $(function () {
         let infoWrapper = document.getElementById('orders-history-info')
         if ( mergedData.length > 0) {
             infoWrapper.style.display = 'none';
+            $ordersHistoryContent.style.display = 'block';
             let ordersHistoryTable = document.getElementById('orders-history-table-body');
             ordersHistoryTable.innerHTML = "";
             for (let i = 0; i < mergedData.length; ++i) {
@@ -341,6 +346,7 @@ $(function () {
                 }
             }
         } else {
+            $ordersHistoryContent.style.display = 'none';
             infoWrapper.style.display = 'block';
         }
     }
