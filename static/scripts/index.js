@@ -40,6 +40,7 @@ $(function () {
     const $zshAmountInput = document.getElementById('zsh-amount-input');
     const $openOrdersContent = document.getElementById('open-orders-content');
     const $ordersHistoryContent = document.getElementById('orders-history-content');
+    const $intervalButtons = document.getElementById('interval-buttons');
 
     //const API_URL = 'http://192.168.0.100:5000';
     const API_URL = 'http://178.176.120.241:5002'; // Alina
@@ -217,6 +218,43 @@ $(function () {
     //     clearInterval(refreshOrderBook);
     //     refreshOrderBook = setInterval(orderBook, 5000);
     // }
+
+    let interval = 5; //default 5 minutes
+
+    $intervalButtons.onclick = (event) => {
+        let buttons = $intervalButtons.getElementsByTagName('div');
+        for (let i = 0; i < buttons.length; i++){
+            buttons[i].style.borderColor = 'transparent';
+        }
+        let target = getEventTarget(event).innerText;
+        switch (target) {
+            case '5m':
+                buttons[0].style.borderColor = 'rgba(255,255,255,0.6)';
+                interval = 5;
+                setChartData();
+                break;
+            case '15m':
+                buttons[1].style.borderColor = 'rgba(255,255,255,0.6)';
+                interval = 15;
+                setChartData();
+                break;
+            case '1h':
+                buttons[2].style.borderColor = 'rgba(255,255,255,0.6)';
+                interval = 60;
+                setChartData()
+                break;
+            case '4h':
+                buttons[3].style.borderColor = 'rgba(255,255,255,0.6)';
+                interval = 240;
+                setChartData();
+                break;
+            case '1d':
+                buttons[4].style.borderColor = 'rgba(255,255,255,0.6)';
+                interval = 1440;
+                setChartData();
+                break;
+        }
+    }
 
     const orderBookLimit = 10;
 
@@ -465,16 +503,17 @@ $(function () {
                     return {time: new Date(block.timestamp * 1000).getTime(), prices: prices, volume: volume}
                 })
 
-                let interval = 5; //minutes
                 let currentDate = new Date();
-                let intervalStart = new Date();
-
-                intervalStart.setMinutes(currentDate.getMinutes() - interval); // One day interval
-                let minutes = (Math.round(intervalStart.getMinutes()/interval) * interval) % 60;
-                intervalStart.setMinutes(minutes);
-                intervalStart.setSeconds(0);
-                intervalStart.setMilliseconds(0);
-
+                let minutes = (Math.ceil(currentDate.getMinutes() /interval) * interval) % 60;
+                if (minutes === 0) {
+                    let hours = Math.ceil(interval / 60);
+                    currentDate.setHours(currentDate.getHours() + hours);
+                }
+                currentDate.setMinutes(minutes);
+                currentDate.setSeconds(0);
+                currentDate.setMilliseconds(0);
+                let intervalStart = new Date(currentDate);
+                intervalStart.setMinutes(intervalStart.getMinutes() - interval);
                 let filteredData = cdata.filter(element => {
                     return element.time < intervalStart.getTime() && element.prices.length !== 0 && element.volume.length !== 0
                 })
@@ -565,14 +604,17 @@ $(function () {
                     return {time: new Date(block.timestamp * 1000).getTime(), prices: prices, volume: volume}
                 })
 
-                let interval = 5; //minutes
                 let currentDate = new Date();
                 let minutes = (Math.ceil(currentDate.getMinutes() /interval) * interval) % 60;
+                if (minutes === 0) {
+                    let hours = Math.ceil(interval / 60);
+                    currentDate.setHours(currentDate.getHours() + hours);
+                }
                 currentDate.setMinutes(minutes);
                 currentDate.setSeconds(0);
                 currentDate.setMilliseconds(0);
                 let intervalStart = new Date(currentDate);
-                intervalStart.setMinutes(currentDate.getMinutes() - interval); // One day interval
+                intervalStart.setMinutes(intervalStart.getMinutes() - interval); // One day interval
                 let filteredData = cdata.filter(element => {
                     return element.time >= intervalStart.getTime() && element.time < currentDate.getTime() && element.prices.length !== 0 && element.volume.length !== 0
                 })
@@ -598,6 +640,12 @@ $(function () {
                     let currentData = {time: intervalStart.getTime() / 1000, open: open, high: high, low: low, close: close};
                     candleSeries.update(currentData);
                     let currentDataVolume = {time: intervalStart.getTime() / 1000, value: totalVolume};
+                    volumeSeries.update(currentDataVolume);
+                }
+                else {
+                    let currentData = {time: intervalStart.getTime() / 1000, open: NaN, high: NaN, low: NaN, close: NaN};
+                    candleSeries.update(currentData);
+                    let currentDataVolume = {time: intervalStart.getTime() / 1000, value: NaN};
                     volumeSeries.update(currentDataVolume);
                 }
             })
