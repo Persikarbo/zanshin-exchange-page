@@ -48,9 +48,11 @@ $(function () {
     const TRADE_DIRECTIONS = {SELL: 'SELL', BUY: 'BUY'};
     let tradeDirection = TRADE_DIRECTIONS.BUY;
 
-    const $primaryColor = "#4C5C97"
-    const $error = "#E27B7B";
-    const $success = "#9FAF90";
+    let greenColor = "#94BFBE"; //B1CC74 B9FFB7
+    let redColor = "#F0899C";
+    const $primaryColor = "#546DAD"
+    const $error = redColor;
+    const $success = greenColor; //"#9FAF90";
 
     const cryptocurrencyPairs = ['ZSH/USDT', 'BTC/USDT', 'BTC/DAI', 'ETH/USDT', 'ETH/DAI', 'BNB/USDT', 'BNB/DAI', 'DOT/USDT',
         'DOT/DAI', 'UNI/USDT', 'UNI/DAI', 'BTC/ETH', 'ETH/UNI', 'BTC/DOT', 'ETH/DOT']
@@ -371,7 +373,7 @@ $(function () {
                         let tableCellText = document.createElement('div');
                         tableCell.appendChild(tableCellText);
                         tableCellText.innerText = parsedData[i][j];
-                        tableCellText.style.backgroundColor = '#9FAF90';
+                        tableCellText.style.backgroundColor = greenColor;
                         tableCellText.style.lineHeight = '12px';
                         tableCellText.style.padding = '2px 10px';
                         tableCellText.style.borderRadius = '10px';
@@ -447,7 +449,7 @@ $(function () {
                     let cols = $asksTable.rows[i + 1].getElementsByTagName("td");
                     if (orderBookData.asks[i] !== undefined && i < orderBookData.asks.length) {
                         cols[0].innerText = orderBookData.asks[i].price.toFixed(decimals);
-                        cols[0].style.backgroundColor = '#FB8387'; // F08CAE EA9EC7
+                        cols[0].style.backgroundColor = redColor; // F08CAE EA9EC7
                         cols[0].style.borderRadius = '10px';
                         cols[0].style.textAlign = 'center';
                         cols[0].style.color = '#fff';
@@ -466,7 +468,7 @@ $(function () {
                     let cols = $bidsTable.rows[i + 1].getElementsByTagName("td");
                     if (orderBookData.bids[i] !== undefined && i < orderBookData.bids.length) {
                         cols[0].innerText = orderBookData.bids[i].price.toFixed(decimals);
-                        cols[0].style.backgroundColor = '#9FAF90'; //899E8B 99C5B5 9FAF90
+                        cols[0].style.backgroundColor = greenColor; //899E8B 99C5B5 9FAF90
                         cols[0].style.borderRadius = '10px';
                         cols[0].style.textAlign = 'center';
                         cols[0].style.color = '#fff';

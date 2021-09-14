@@ -10,14 +10,16 @@
             --base-font-size: 14px;
             --base-height: 35px;
             /*--base-heightx;*/
-            --primary-color: #4C5C97;
-            --secondary-color: #BAC8FE; //animations
+            /*--secondary-color: #BAC8FE; //animations*/
+            --primary-color: #546DAD;
+            --secondary-color: #BAC8FE;
         }
 
         body {
-            background: url('../static/images/background-image-2-3.png') no-repeat fixed top right;
+            background: url('../static/images/zanshin-exchange-bg-2-1.png') no-repeat fixed top right;
             background-size: cover;
-            padding: 19px 13% 19px 13%;
+            padding: 25px 13% 25px 13%;
+            margin: 0;
             /*height: 100%;*/
             /*overflow: hidden;*/
         }
@@ -41,7 +43,7 @@
 
         .header-buttons a {
             font-family: "Open Sans";
-            font-size: var(--base-font-size);
+            font-size: 16px;
             color: white;
             text-decoration: none;
             cursor: pointer;
@@ -120,7 +122,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #BAC8FE;
+            background: var(--secondary-color);
             margin-top: 10px;
             width: 70%;
         }
@@ -157,7 +159,7 @@
         }
 
         #copy-message {
-            background: #4C5C97;
+            background: var(--primary-color);
             border-radius: 10px;
             width: 50%;
             text-align: center;
@@ -179,7 +181,7 @@
             margin-left: -5px;
             border-width: 5px;
             border-style: solid;
-            border-color: transparent transparent #4C5C97 transparent;
+            border-color: transparent transparent #6B8BC5 transparent;
         }
 
         #tokens-list-title {
@@ -188,9 +190,9 @@
             display: flex;
             align-items: center;
             text-align: center;
-            color: #4C5C97;
+            color: var(--primary-color);
             padding: 15px 20px;
-            border-bottom: 4px solid #BAC8FE;
+            border-bottom: 4px solid var(--secondary-color);
         }
 
         #tokens-list {
@@ -219,7 +221,7 @@
             text-decoration: none;
             font-family: "Open Sans";
             font-size: var(--base-font-size);
-            color: #4C5C97;
+            color: var(--primary-color);
             border-bottom: 1px solid #E1E8F5;
         }
 
@@ -577,8 +579,8 @@
         #interval-buttons {
             display: flex;
             flex-direction: row;
-            justify-content: space-between;
-            width: 35%;
+            justify-content: flex-end;
+            width: 100%;
         }
 
         #interval-buttons div {
@@ -590,6 +592,7 @@
             font-size: 12px;
             border: 2px solid transparent;
             border-radius: 15px;
+            margin-left: 10px;
         }
 
         #interval-buttons div:first-child {
@@ -621,7 +624,7 @@
             text-align: left;
             z-index: 1000;
             pointer-events: none;
-            border: 1px solid #4C5C97;
+            border: 1px solid var(--primary-color);
             border-radius: 5px;
             font-family: "Open Sans";
         }
@@ -655,7 +658,7 @@
         .link {
             font-family: Open Sans;
             line-height: 22px;
-            color: #8299FE;
+            color: var(--secondary-color);
             font-size: var(--base-font-size);
             text-decoration: none;
         }
@@ -867,7 +870,7 @@
 </head>
 <body>
 <div id="header">
-    <a href=""><img src="../static/images/zanshin-logo.png" style="height: 38px;  margin-left: 1px;"></a>
+    <a href=""><img src="../static/images/zanshin-logo-white.png" style="height: 38px;  margin-left: 1px;"></a>
     <div class="header-buttons" id="auth-buttons">
         <div class="first-btn" ><a href="login.html">Вход</a></div>
         <div class="second-btn"><a href="sign_up.html">Регистрация</a></div>
