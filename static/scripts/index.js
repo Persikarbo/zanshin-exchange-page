@@ -43,7 +43,7 @@ $(function () {
     const $intervalButtons = document.getElementById('interval-buttons');
 
     //const API_URL = 'http://192.168.0.100:5000';
-    const API_URL = 'http://178.176.120.241:5002'; // Alina
+    const API_URL = 'http://localhost:5000'; // Alina
     //const API_URL = 'http://4a9b-77-222-104-154.ngrok.io';
     const TRADE_DIRECTIONS = {SELL: 'SELL', BUY: 'BUY'};
     let tradeDirection = TRADE_DIRECTIONS.BUY;
@@ -63,6 +63,15 @@ $(function () {
     let secondCryptocurrency = defaultCryptocurrencyPair.substring(defaultCryptocurrencyPair.indexOf('/') + 1,
         defaultCryptocurrencyPair.length);
     let balances = [];
+    let language = localStorage.getItem('language');
+
+    const setPhraseLanguage = (element, russianPhrase, englishPhrase) => {
+        language = localStorage.getItem('language');
+        if (language === "rus" || language === null)
+            element.innerText = russianPhrase;
+        else
+            element.innerText = englishPhrase;
+    }
 
     const setCryptocurrency = (currentPair) => {
         $currentPairLabel.innerText = currentPair;
@@ -72,16 +81,20 @@ $(function () {
             currentCryptocurrencyPair.length);
 
 
-        if ($('#switch').prop('checked')) $btnText.innerText = `Продать ${firstCryptocurrency}`;
-        else $btnText.innerText = `Купить ${firstCryptocurrency}`;
+        if ($('#switch').prop('checked')) {
+            setPhraseLanguage($btnText, `Продать ${firstCryptocurrency}`, `Sell ${firstCryptocurrency}`);
+        }
+        else {
+            setPhraseLanguage($btnText, `Купить ${firstCryptocurrency}`, `Buy ${firstCryptocurrency}`);
+        }
         $secondCryptocurrencyLabel.innerText = secondCryptocurrency;
         $firstCryptocurrencyLabel.innerText = firstCryptocurrency;
         $totalCryptocurrencyLabel.innerText = secondCryptocurrency;
 
-        $tablePriceCol1.innerText = `Цена (${secondCryptocurrency})`;
-        $tableAmountCol1.innerText = `Количество (${firstCryptocurrency})`;
-        $tablePriceCol2.innerText = `Цена (${secondCryptocurrency})`;
-        $tableAmountCol2.innerText = `Количество (${firstCryptocurrency})`;
+        setPhraseLanguage($tablePriceCol1, `Цена(${secondCryptocurrency})`, `Price(${secondCryptocurrency})`)
+        setPhraseLanguage($tableAmountCol1, `Количество(${firstCryptocurrency})`, `Amount (${firstCryptocurrency})`)
+        setPhraseLanguage($tablePriceCol2, `Цена(${secondCryptocurrency})`, `Price(${secondCryptocurrency})`)
+        setPhraseLanguage($tableAmountCol2, `Количество(${firstCryptocurrency})`, `Amount (${firstCryptocurrency})`)
 
         // setChartData();
     }
@@ -132,10 +145,10 @@ $(function () {
 
     $switchButton.onclick = () => {
         if ($('#switch').prop('checked')) {
-            $btnText.innerText = `Продать ${firstCryptocurrency}`;
+            setPhraseLanguage($btnText, `Продать ${firstCryptocurrency}`, `Sell ${firstCryptocurrency}`);
             tradeDirection = TRADE_DIRECTIONS.SELL;
         } else {
-            $btnText.innerText = `Купить ${firstCryptocurrency}`;
+            setPhraseLanguage($btnText, `Купить ${firstCryptocurrency}`, `Buy ${firstCryptocurrency}`)
             tradeDirection = TRADE_DIRECTIONS.BUY;
         }
     }
@@ -175,8 +188,7 @@ $(function () {
     $zshAmountInput.oninput = () => {
         const $commissionInfo = document.getElementById('commission-info');
         let commission = Math.round((parseFloat($zshAmountInput.value.replace(',','.')) * 0.0001)*10**6)/10**6;
-        $commissionInfo.innerText = `Комиссия (0,01%): ${commission} ZSH`;
-
+        setPhraseLanguage($commissionInfo, `Комиссия (0,01%): ${commission} ZSH`, `Commission (0,01%): ${commission} ZSH`)
         numericInputHandler($zshAmountInput, decimals);
     }
 
@@ -664,12 +676,12 @@ $(function () {
         const amount = tradeDirection === TRADE_DIRECTIONS.SELL ? amountCalc : amountCalc * price;
 
         if (price === 0 || isNaN(price)) {
-            setMessageToButton("Введите цену", $error, $btn, $btnText);
+            setMessageToButton("Пожалуйста, введите цену", "Please input price", $error, $btn, $btnText);
             setTimeout(returnOldButton, 2000);
             return;
         }
         if (amount === 0 || isNaN(amountCalc)) {
-            setMessageToButton("Введите количество", $error, $btn, $btnText);
+            setMessageToButton("Пожалуйста, введите количество", "Please input amount", $error, $btn, $btnText);
             setTimeout(returnOldButton, 2000);
             return;
         }
@@ -688,7 +700,7 @@ $(function () {
         let tokenBalance = balances.filter(item => item.token === symbolToSend.toUpperCase())[0];
 
         if (tokenBalance !== undefined && amount > tokenBalance.balance) {
-            setMessageToButton("Недостаточно средств", $error, $btn, $btnText);
+            setMessageToButton("Недостаточно средств", "Insufficient funds", $error, $btn, $btnText);
             setTimeout(returnOldButton, 2000);
             return;
         }
@@ -718,7 +730,7 @@ $(function () {
             let data = await result.json();
             if (data.MSG) {
                 if (data.MSG.includes("Tx pool synced among")) {
-                    setMessageToButton("Заявка отправлена", $success, $btn, $btnText);
+                    setMessageToButton("Заявка отправлена", "Application has been sent", $success, $btn, $btnText);
                     $priceInput.value = '';
                     $amountInput.value = '';
                     $totalPrice.innerText = '';
@@ -726,16 +738,16 @@ $(function () {
                 } else if (data.MSG.includes("Try to sign in first"))
                     showAuthError();
                 else if (data.MSG.includes("Spend amount exceeds account balance"))
-                    setMessageToButton("Недостаточно средств", $error, $btn, $btnText);
+                    setMessageToButton("Недостаточно средств", "Insufficient funds", $error, $btn, $btnText);
                 else {
-                    setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error, $btn, $btnText);
+                    setMessageToButton("Ошибка на сервере. Пожалуйста, повторите попытку позже.", "Server error. Please try again later", $error, $btn, $btnText);
                 }
             } else {
-                setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error, $btn, $btnText);
+                setMessageToButton("Ошибка на сервере. Пожалуйста, повторите попытку позже.", "Server error. Please try again later", $error, $btn, $btnText);
             }
         } catch (e) {
             hideLoader();
-            setMessageToButton("Ошибка на сервере. Пожалуйста повторите попытку позже.", $error, $btn, $btnText);
+            setMessageToButton("Ошибка на сервере. Пожалуйста, повторите попытку позже.", "Server error. Please try again later", $error, $btn, $btnText);
         }
         setTimeout(returnOldButton, 2000);
     }
@@ -766,10 +778,14 @@ $(function () {
         $sendBtnText.style.display = "block";
     }
 
-    const setMessageToButton = (message, backgroundColor = $primaryColor, button, buttonText) => {
+    const setMessageToButton = (russianMessage, englishMessage, backgroundColor = $primaryColor, button, buttonText) => {
+        language = localStorage.getItem('language');
         button.style.background = backgroundColor;
         button.style.pointerEvents = "none";
-        buttonText.innerText = message;
+        if (language === "rus" || language === null)
+            buttonText.innerText = russianMessage;
+        else
+            buttonText.innerText = englishMessage;
     }
 
     const showAuthError = () => {
@@ -789,8 +805,9 @@ $(function () {
         $btn.style.removeProperty("background");
         $sendBtn.style.pointerEvents = "auto";
         $sendBtn.style.removeProperty("background");
-        $btnText.innerText = tradeDirection === TRADE_DIRECTIONS.SELL ? `Продать ${firstCryptocurrency}` : `Купить ${firstCryptocurrency}`;
-        $sendBtnText.innerText = 'Отправить ZSH';
+        tradeDirection === TRADE_DIRECTIONS.SELL ? setPhraseLanguage($btnText, `Продать ${firstCryptocurrency}`, `Sell ${firstCryptocurrency}`)
+            : setPhraseLanguage($btnText, `Купить ${firstCryptocurrency}`, `Buy ${firstCryptocurrency}`);
+        setPhraseLanguage($sendBtnText, 'Отправить ZSH', 'Send ZSH')
     }
 
     $exitBtn.onclick = async () => {
@@ -837,12 +854,12 @@ $(function () {
         const amount = parseFloat($zshAmountInput.value.replace(',','.'));
 
         if (recipient.length === 0) {
-            setMessageToButton("Укажите получателя", $error, $sendBtn, $sendBtnText);
+            setMessageToButton("Пожалуйста, укажите адрес получателя", "Please input recipient's address", $error, $sendBtn, $sendBtnText);
             setTimeout(returnOldButton, 2000);
             return;
         }
         if (amount === 0 || isNaN(amount)) {
-            setMessageToButton("Введите количество", $error, $sendBtn, $sendBtnText);
+            setMessageToButton("Введите количество", "Please input amount", $error, $sendBtn, $sendBtnText);
             setTimeout(returnOldButton, 2000);
             return;
         }
@@ -856,7 +873,7 @@ $(function () {
         let tokenBalance = balances.filter(item => item.token === 'ZSH')[0];
 
         if (tokenBalance !== undefined && amount > tokenBalance.balance) {
-            setMessageToButton("Недостаточно средств", $error, $sendBtn, $sendBtnText);
+            setMessageToButton("Недостаточно средств", "Insufficient funds", $error, $sendBtn, $sendBtnText);
             setTimeout(returnOldButton, 2000);
             return;
         }
@@ -887,23 +904,23 @@ $(function () {
 
             if (data.MSG) {
                 if (data.MSG.includes("Tx pool synced among")) {
-                    setMessageToButton("Заявка отправлена", $success, $sendBtn, $sendBtnText);
+                    setMessageToButton("Заявка отправлена", "Application has been sent", $success, $sendBtn, $sendBtnText);
                     $recipientInput.value = '';
                     $zshAmountInput.value = '';
                     await setBalance();
                 } else if (data.MSG.includes("Try to sign in first"))
                     showAuthError();
                 else if (data.MSG.includes("Spend amount exceeds account balance"))
-                    setMessageToButton("Недостаточно средств", $error, $sendBtn, $sendBtnText);
+                    setMessageToButton("Недостаточно средств", "Insufficient funds", $error, $sendBtn, $sendBtnText);
                 else {
-                    setMessageToButton("Ошибка на сервере 1. Пожалуйста повторите попытку позже.", $error, $sendBtn, $sendBtnText);
+                    setMessageToButton("Ошибка на сервере. Пожалуйста, повторите попытку позже.", "Server error. Please try again later", $error, $sendBtn, $sendBtnText);
                 }
             } else {
-                setMessageToButton("Ошибка на сервере 2. Пожалуйста повторите попытку позже.", $error, $sendBtn, $sendBtnText);
+                setMessageToButton("Ошибка на сервере. Пожалуйста, повторите попытку позже.", "Server error. Please try again later", $error, $sendBtn, $sendBtnText);
             }
         } catch (e) {
             hideLoader();
-            setMessageToButton("Ошибка на сервере 3. Пожалуйста повторите попытку позже.", $error, $sendBtn, $sendBtnText);
+            setMessageToButton("Ошибка на сервере. Пожалуйста, повторите попытку позже.", "Server error. Please try again later", $error, $sendBtn, $sendBtnText);
         }
         setTimeout(returnOldButton, 2000);
     }

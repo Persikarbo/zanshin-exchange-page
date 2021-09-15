@@ -30,9 +30,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="feat: add different intervals for chart data">
+    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="design fixed">
+      <change afterPath="$PROJECT_DIR$/static/scripts/switchLanguage/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/scripts/dynamicCharts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/scripts/dynamicCharts/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/images/background-image-1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/images/background-image-2-1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/images/background-image-2-2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/images/background-image-2-3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/images/background-image-2.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/static/scripts/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/scripts/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
@@ -79,6 +84,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -127,6 +133,8 @@
       <workItem from="1631241352233" duration="747000" />
       <workItem from="1631244618048" duration="18000" />
       <workItem from="1631255409979" duration="7719000" />
+      <workItem from="1631607176169" duration="23709000" />
+      <workItem from="1631692454295" duration="13241000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1629703298500</created>
@@ -240,7 +248,14 @@
       <option name="project" value="LOCAL" />
       <updated>1630937076518</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="design fixed">
+      <created>1631607212591</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1631607212591</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -274,7 +289,8 @@
     <MESSAGE value="feat: fix common tx endpoints" />
     <MESSAGE value="fix dynamic chart" />
     <MESSAGE value="feat: add different intervals for chart data" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add different intervals for chart data" />
+    <MESSAGE value="design fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="design fixed" />
   </component>
   <component name="WindowStateProjectService">
     <state x="347" y="159" key="#Inspections" timestamp="1629721403086">
@@ -285,25 +301,25 @@
       <screen x="0" y="0" width="1440" height="960" />
     </state>
     <state x="501" y="222" key="FileChooserDialogImpl/0.0.1440.960@0.0.1440.960" timestamp="1629703071392" />
-    <state x="313" y="214" key="Vcs.Push.Dialog.v2" timestamp="1630937086091">
+    <state x="313" y="214" key="Vcs.Push.Dialog.v2" timestamp="1631607239583">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="313" y="214" key="Vcs.Push.Dialog.v2/0.0.1440.960@0.0.1440.960" timestamp="1630937086091" />
+    <state x="313" y="214" key="Vcs.Push.Dialog.v2/0.0.1440.960@0.0.1440.960" timestamp="1631607239583" />
     <state x="93" y="93" width="1255" height="775" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1629737298859">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
     <state x="93" y="93" width="1255" height="775" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1440.960@0.0.1440.960" timestamp="1629737298859" />
-    <state x="427" y="215" width="587" height="530" key="find.popup" timestamp="1631272307381">
+    <state x="427" y="215" width="587" height="560" key="find.popup" timestamp="1631726530060">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="427" y="215" width="587" height="530" key="find.popup/0.0.1440.960@0.0.1440.960" timestamp="1631272307381" />
-    <state x="377" y="221" key="run.anything.popup" timestamp="1630489201730">
+    <state x="427" y="215" width="587" height="560" key="find.popup/0.0.1440.960@0.0.1440.960" timestamp="1631726530059" />
+    <state x="377" y="221" key="run.anything.popup" timestamp="1631623164923">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="377" y="221" key="run.anything.popup/0.0.1440.960@0.0.1440.960" timestamp="1630489201730" />
-    <state x="383" y="205" width="672" height="678" key="search.everywhere.popup" timestamp="1630409774743">
+    <state x="377" y="221" key="run.anything.popup/0.0.1440.960@0.0.1440.960" timestamp="1631623164923" />
+    <state x="383" y="205" width="672" height="678" key="search.everywhere.popup" timestamp="1631625479255">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="383" y="205" width="672" height="678" key="search.everywhere.popup/0.0.1440.960@0.0.1440.960" timestamp="1630409774743" />
+    <state x="383" y="205" width="672" height="678" key="search.everywhere.popup/0.0.1440.960@0.0.1440.960" timestamp="1631625479255" />
   </component>
 </project>
