@@ -306,17 +306,20 @@ $(function () {
         })
         let parsedData = filteredData.map(element => {
             let direction = null;
+            let volume = 0;
             let date = new Date(element.timestamp*1000)
             let formattedDate = getFormattedDate(date);
             // first token && second token
             if (element.get === firstCryptocurrency.toLowerCase() && element.send === secondCryptocurrency.toLowerCase()) {
                 direction = 'BUY';
+                volume = parseFloat(element.getVol).toFixed(decimals);
             }
             // second token && first token
             if (element.get === secondCryptocurrency.toLowerCase() && element.send === firstCryptocurrency.toLowerCase()) {
                 direction = 'SELL';
+                volume = parseFloat(element.sendVol).toFixed(decimals);
             }
-            return [formattedDate, element.symbol.toUpperCase(), 'LIMIT', direction, element.price, parseFloat(element.sendVol).toFixed(6)]
+            return [formattedDate, element.symbol.toUpperCase(), 'LIMIT', direction, element.price, volume]
         })
 
         let infoWrapper = document.getElementById('open-orders-info')
@@ -353,19 +356,29 @@ $(function () {
 
         let parsedData = mergedData.map(element => {
             let pair = element.symbol;
+            let volume = 0;
             let firstSymbol = pair.substring(0, pair.indexOf('/'));
             let secondSymbol = pair.substring(pair.indexOf('/') + 1, pair.length);
             let direction = null;
             let date = new Date(element.timestamp*1000)
-            let formattedDate = getFormattedDate(date);
+            // let formattedDate = getFormattedDate(date);
             if (element.contract === firstSymbol) {
-                direction = 'BUY';
+                direction = 'SELL';
+                volume = parseFloat(element.sendAmount).toFixed(decimals);
             }
             if (element.contract === secondSymbol) {
-                direction = 'SELL';
+                direction = 'BUY';
+                volume = parseFloat(element.recieveAmount).toFixed(decimals);
             }
             let status = 'DONE';
-            return [formattedDate, element.symbol.toUpperCase(), 'LIMIT', direction, element.price, status]
+            return [date, element.symbol.toUpperCase(), 'LIMIT', direction, element.price, volume, status]
+        })
+
+        parsedData.sort(function(a,b){
+            return new Date(b[0]) - new Date(a[0]);
+        });
+        parsedData.forEach(element => {
+            element[0] = getFormattedDate(element[0]);
         })
 
         let infoWrapper = document.getElementById('orders-history-info')
@@ -377,7 +390,7 @@ $(function () {
             for (let i = 0; i < mergedData.length; ++i) {
                 let tableRow = document.createElement('tr');
                 ordersHistoryTable.appendChild(tableRow);
-                for (let j = 0; j < 6; ++j) {
+                for (let j = 0; j < 7; ++j) {
                     if (j === 5 && parsedData[i][j] === 'DONE')
                     {
                         let tableCell = document.createElement('td');
@@ -535,6 +548,7 @@ $(function () {
                 let intervalEnd = new Date(intervalStart);
                 intervalStart.setMinutes(intervalStart.getMinutes() - interval);
                 let reversedFilteredData = filteredData.reverse();
+                console.log(reversedFilteredData);
                 let history = [[]];
 
                 let i = 0;
@@ -566,9 +580,9 @@ $(function () {
                     let timestamp = new Date(item[0]);
                     if (item.length > 1) {
                         item.shift()
-                        let open = item[0].prices[0];
+                        let close = item[0].prices[0];
                         let lastTransaction = item[item.length - 1];
-                        let close = lastTransaction.prices[lastTransaction.prices.length - 1];
+                        let open = lastTransaction.prices[lastTransaction.prices.length - 1];
                         let high = null;
                         let low = null;
                         let totalVolume = null;
