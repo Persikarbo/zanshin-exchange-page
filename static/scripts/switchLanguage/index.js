@@ -35,7 +35,7 @@ $(function () {
             ordersHistoryTabTitle: "История сделок",
             openOrdersTableHead: ["Дата","Пара","Тип","Направление","Цена","Количество"],
             openOrdersInfo: "У вас пока нет открытых сделок",
-            ordersHistoryTableHead: ["Дата","Пара","Тип","Направление","Цена","Статус"],
+            ordersHistoryTableHead: ["Дата","Пара","Тип","Направление","Цена","Количество","Статус"],
             ordersHistoryInfo: "У вас пока нет истории сделок",
             toggleButtonBuy: "Купить",
             toggleButtonSell: "Продать",
@@ -44,7 +44,7 @@ $(function () {
         },
         "eng": {
             loginBtnTitle: "Log In",
-            registerBtnTitle: "Register",
+            registerBtnTitle: "Sign up",
             accountBtnTitle: "My account",
             exitBtnTitle: "Log Out",
             copyMessage: "Address copied to clipboard",
@@ -56,7 +56,7 @@ $(function () {
             totalPriceFieldLabel: "Total",
             authErrorLogin: "Log In",
             authErrorOr: "or",
-            authErrorRegister: "Register",
+            authErrorRegister: "Sign up",
             recipientFieldLabel: "Recipient",
             recipientFieldPlaceholder: "Input recipient's address",
             commissionInfo: "Commission (0,01%): 0 ZSH",
@@ -67,7 +67,7 @@ $(function () {
             ordersHistoryTabTitle: "Orders history",
             openOrdersTableHead: ["Date","Pair","Type","Direction","Price","Amount"],
             openOrdersInfo: "You have no open orders yet",
-            ordersHistoryTableHead: ["Date","Pair","Type","Direction","Price","Status"],
+            ordersHistoryTableHead: ["Date","Pair","Type","Direction","Price","Amount","Status"],
             ordersHistoryInfo: "You have no orders history yet",
             toggleButtonBuy: "Buy",
             toggleButtonSell: "Sell",
@@ -96,7 +96,7 @@ $(function () {
         document.getElementById('send-zsh-btn').innerText = languages[language].sendZshBtnTitle;
         document.getElementById('price-field').innerText = languages[language].priceFieldLabel;
         document.getElementById('amount-field').innerText = languages[language].amountFieldLabel;
-        document.getElementById('total-price-field').innerText = languages[language].totalPriceFieldLabel;
+        document.getElementById('total-price-field-title').innerText = languages[language].totalPriceFieldLabel;
         document.getElementById('auth-error-login').innerText = languages[language].authErrorLogin;
         document.getElementById('btn-text2').innerText = languages[language].authErrorOr;
         document.getElementById('auth-error-register').innerText = languages[language].authErrorRegister;
