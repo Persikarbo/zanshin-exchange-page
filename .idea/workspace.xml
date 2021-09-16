@@ -30,7 +30,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="fixes 16/09/21" />
+    <list default="true" id="5f5f99a7-0417-42e6-b551-ba974f1cb56b" name="Default Changelist" comment="fixes 16/09/21: fix scrollbar on login and signup pages" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -124,6 +124,7 @@
       <workItem from="1631607176169" duration="23709000" />
       <workItem from="1631692454295" duration="13369000" />
       <workItem from="1631784626098" duration="6101000" />
+      <workItem from="1631799151892" duration="140000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1629703298500</created>
@@ -258,7 +259,14 @@
       <option name="project" value="LOCAL" />
       <updated>1631791901345</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="fixes 16/09/21: fix scrollbar on login and signup pages">
+      <created>1631799272464</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1631799272464</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -295,7 +303,8 @@
     <MESSAGE value="design fixed" />
     <MESSAGE value="feat: add english language" />
     <MESSAGE value="fixes 16/09/21" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixes 16/09/21" />
+    <MESSAGE value="fixes 16/09/21: fix scrollbar on login and signup pages" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixes 16/09/21: fix scrollbar on login and signup pages" />
   </component>
   <component name="WindowStateProjectService">
     <state x="347" y="159" key="#Inspections" timestamp="1629721403086">
@@ -306,10 +315,10 @@
       <screen x="0" y="0" width="1440" height="960" />
     </state>
     <state x="501" y="222" key="FileChooserDialogImpl/0.0.1440.960@0.0.1440.960" timestamp="1629703071392" />
-    <state x="313" y="214" key="Vcs.Push.Dialog.v2" timestamp="1631791929310">
+    <state x="313" y="214" key="Vcs.Push.Dialog.v2" timestamp="1631799284662">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
-    <state x="313" y="214" key="Vcs.Push.Dialog.v2/0.0.1440.960@0.0.1440.960" timestamp="1631791929310" />
+    <state x="313" y="214" key="Vcs.Push.Dialog.v2/0.0.1440.960@0.0.1440.960" timestamp="1631799284662" />
     <state x="93" y="93" width="1255" height="775" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1629737298859">
       <screen x="0" y="0" width="1440" height="960" />
     </state>
