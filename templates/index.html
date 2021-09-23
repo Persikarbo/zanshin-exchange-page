@@ -922,12 +922,12 @@
             <div class="language-btns" id="en-language-btn">EN</div>
         </div>
         <div class="switching-buttons" id="auth-buttons">
-            <div class="first-btn"><a href="login.html" id="login-btn-title">Вход</a></div>
-            <div class="second-btn"><a href="sign_up.html" id="register-btn-title">Регистрация</a></div>
+            <div class="first-btn"><a href="login.html" id="login-btn-title">Log in</a></div>
+            <div class="second-btn"><a href="sign_up.html" id="register-btn-title">Sign up</a></div>
         </div>
         <div class="switching-buttons" id="acc-buttons" style="display: none;">
-            <div class="first-btn" ><a id="acc-btn">Мой аккаунт</a></div>
-            <div class="second-btn"><a id="exit-btn">Выход</a></div>
+            <div class="first-btn" ><a id="acc-btn">My account</a></div>
+            <div class="second-btn"><a id="exit-btn">Log out</a></div>
         </div>
     </div>
 
@@ -948,10 +948,10 @@
                 </div>
                 <div id="copy-message-with-triangle">
                     <div id="copy-message-triangle"></div>
-                    <span id="copy-message">Адрес скопирован в буфер обмена</span>
+                    <span id="copy-message">Address copied to clipboard</span>
                 </div>
                 <span id="tokens-list-title">
-                    Активы
+                    Assets
                 </span>
                 <ul id="tokens-list"></ul>
             </div>
@@ -982,8 +982,8 @@
                 <div id="wrapper">
                     <div id="tabs-order-wrapper">
                         <div id="tabs-order-buttons">
-                            <button class="tab-links-order-wrapper" id="limit-order-btn" onclick="openTabOrderWrapper(event, 'limit-order-tab')">Лимитный ордер</button>
-                            <button class="tab-links-order-wrapper" id="send-zsh-btn" onclick="openTabOrderWrapper(event, 'send-zsh-wrapper')">Отправить ZSH</button>
+                            <button class="tab-links-order-wrapper" id="limit-order-btn" onclick="openTabOrderWrapper(event, 'limit-order-tab')">Limit order</button>
+                            <button class="tab-links-order-wrapper" id="send-zsh-btn" onclick="openTabOrderWrapper(event, 'send-zsh-wrapper')">Send ZSH</button>
                         </div>
                         <div id="limit-order-tab" class="tab-content-order-wrapper">
                             <div id="limit-order-wrapper">
@@ -993,32 +993,32 @@
                                 </span>
                                 <!--    <div id="available-amount">Доступно 0 USDT</div>-->
                                 <div class="field-wrapper" id="price-input-wrapper">
-                                    <div class="field-name" id="price-field">Цена</div>
+                                    <div class="field-name" id="price-field">Price</div>
                                     <input type="text" name="input" class="input" id="price-input" placeholder="0">
                                     <div class="cryptocurrency-name" id="second-cryptocurrency">USDT</div>
                                 </div>
                                 <div class="field-wrapper" id="amount-input-wrapper">
-                                    <div class="field-name" id="amount-field">Количество</div>
+                                    <div class="field-name" id="amount-field">Amount</div>
                                     <input type="text" name="input" class ="input" id="amount-input" placeholder="0">
                                     <div class="cryptocurrency-name" id="first-cryptocurrency">ZSH</div>
                                 </div>
                                 <div id="horizontal-line"></div>
                                 <div id="total-and-btn-wrapper">
                                     <div class="field-wrapper" id="total-price-field">
-                                        <div class="field-name" id="total-price-field-title">Всего</div>
+                                        <div class="field-name" id="total-price-field-title">Total</div>
                                         <div id="total-price"></div>
                                         <div class="cryptocurrency-name" id="total-cryptocurrency">USDT</div>
                                     </div>
                                     <div class="btn-wrapper">
                                         <button class="btn" id="btn">
                                             <div class="loader" id="loader"></div>
-                                            <div class="btn-text" id="btn-text">Купить ZSH</div>
+                                            <div class="btn-text" id="btn-text">Buy ZSH</div>
                                         </button>
                                         <div class="auth-error" id="auth-error">
                                             <div>
-                                                <a href="login.html" class="link" id="auth-error-login">Войдите</a>
-                                                <span class="btn-text2" id="btn-text2"> или </span>
-                                                <a href="sign_up.html" class="link" id="auth-error-register">Зарегистрируйтесь</a>
+                                                <a href="login.html" class="link" id="auth-error-login">Log in</a>
+                                                <span class="btn-text2" id="btn-text2"> or </span>
+                                                <a href="sign_up.html" class="link" id="auth-error-register">Sign up</a>
                                             </div>
                                         </div>
                                     </div>
@@ -1028,25 +1028,25 @@
                         <div class="tab-content-order-wrapper" id="send-zsh-wrapper">
                             <div id="send-zsh-wrapper-content">
                                 <div class="field-wrapper" id="recipient-input-wrapper">
-                                    <div class="field-name" id="recipient-field">Получатель</div>
-                                    <input type="text" name="input" id="recipient-input" placeholder="Введите адрес получателя">
+                                    <div class="field-name" id="recipient-field">Recipient</div>
+                                    <input type="text" name="input" id="recipient-input" placeholder="Input recipient's address">
                                 </div>
                                 <div class="field-wrapper" id="zsh-amount-input-wrapper">
-                                    <div class="field-name" id="amount-field-SZ">Количество</div>
+                                    <div class="field-name" id="amount-field-SZ">Amount</div>
                                     <input type="text" name="input" class ="input" id="zsh-amount-input" placeholder="0">
                                     <div class="cryptocurrency-name">ZSH</div>
                                 </div>
-                                <div id="commission-info">Комиссия (0,01%): 0 ZSH</div>
+                                <div id="commission-info">Commission (0,01%): 0 ZSH</div>
                                 <div class="btn-wrapper">
                                     <button class="btn" id="send-btn">
                                         <div class="loader" id="loader-2"></div>
-                                        <div class="btn-text" id="send-btn-text">Отправить ZSH</div>
+                                        <div class="btn-text" id="send-btn-text">Send ZSH</div>
                                     </button>
                                     <div class="auth-error" id="auth-error-second-tab">
                                         <div>
-                                            <a href="login.html" class="link" id="auth-error-login-SZ">Войдите</a>
-                                            <span class="btn-text2" id="auth-error-or-SZ"> или </span>
-                                            <a href="sign_up.html" id="auth-error-register-SZ" class="link">Зарегистрируйтесь</a>
+                                            <a href="login.html" class="link" id="auth-error-login-SZ">Log in</a>
+                                            <span class="btn-text2" id="auth-error-or-SZ"> or </span>
+                                            <a href="sign_up.html" id="auth-error-register-SZ" class="link">Sign up</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1062,9 +1062,9 @@
                     <table  id="asks-table" class="table">
                         <thead>
                         <tr>
-                            <th scope="col" id="table-price-col-1">Цена(USDT)</th>
-                            <th scope="col" id="table-amount-col-1">Количество(ZSH)</th>
-                            <th scope="col" id="table-total-col-1">Всего</th>
+                            <th scope="col" id="table-price-col-1">Price(USDT)</th>
+                            <th scope="col" id="table-amount-col-1">Amount(ZSH)</th>
+                            <th scope="col" id="table-total-col-1">Total</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -1074,9 +1074,9 @@
                 <table id="bids-table" class="table">
                     <thead>
                     <tr>
-                        <th scope="col" id="table-price-col-2">Цена(USDT)</th>
-                        <th scope="col" id="table-amount-col-2">Количество(ZSH)</th>
-                        <th scope="col" id="table-total-col-2">Всего</th>
+                        <th scope="col" id="table-price-col-2">Price(USDT)</th>
+                        <th scope="col" id="table-amount-col-2">Amount(ZSH)</th>
+                        <th scope="col" id="table-total-col-2">Total</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -1088,19 +1088,19 @@
     <div id="tabs-wrapper">
         <div style="padding: 2%">
             <div id="tabs-buttons">
-                <button class="tab-links" id="open-orders-btn" onclick="openTab(event, 'open-orders')">Открытые сделки</button>
-                <button class="tab-links" id="orders-history-btn" onclick="openTab(event, 'orders-history')">История сделок</button>
+                <button class="tab-links" id="open-orders-btn" onclick="openTab(event, 'open-orders')">Open orders</button>
+                <button class="tab-links" id="orders-history-btn" onclick="openTab(event, 'orders-history')">Orders history</button>
             </div>
             <div id="open-orders" class="tab-content">
                 <table  class="open-orders-table">
                     <thead id="open-orders-table-head">
                     <tr>
-                        <th scope="col">Дата</th>
-                        <th scope="col">Пара</th>
-                        <th scope="col">Тип</th>
-                        <th scope="col">Направление</th>
-                        <th scope="col">Цена</th>
-                        <th scope="col">Количество</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Pair</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Direction</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Amount</th>
                     </tr>
                     </thead>
                 </table>
@@ -1110,20 +1110,20 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="tables-info" id="open-orders-info">У вас пока нет открытых сделок</div>
+                <div class="tables-info" id="open-orders-info">You have no open orders yet</div>
             </div>
 
             <div id="orders-history" class="tab-content">
                 <table  class="orders-history-table">
                     <thead id="orders-history-table-head">
                     <tr>
-                        <th scope="col">Дата</th>
-                        <th scope="col">Пара</th>
-                        <th scope="col">Тип</th>
-                        <th scope="col">Направление</th>
-                        <th scope="col">Цена</th>
-                        <th scope="col">Количество</th>
-                        <th scope="col">Статус</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Pair</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Direction</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
                     </tr>
                     </thead>
                 </table>
@@ -1133,7 +1133,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="tables-info" id="orders-history-info">У вас пока нет истории сделок</div>
+                <div class="tables-info" id="orders-history-info">You have no orders history yet</div>
             </div>
         </div>
         </div>

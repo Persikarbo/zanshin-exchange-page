@@ -4,7 +4,7 @@ $(function () {
 
     window.addEventListener("load", async function (event) {
         if (localStorage.getItem('language') === null)
-            setLanguage('rus');
+            setLanguage('eng');
         else
             setLanguage(localStorage.getItem('language'))
     })
@@ -43,18 +43,18 @@ $(function () {
             sellZshBtnTitle: "Продать ZSH",
         },
         "eng": {
-            loginBtnTitle: "Log In",
+            loginBtnTitle: "Log in",
             registerBtnTitle: "Sign up",
             accountBtnTitle: "My account",
-            exitBtnTitle: "Log Out",
+            exitBtnTitle: "Log out",
             copyMessage: "Address copied to clipboard",
             assetsListTitle: "Assets",
-            limitOrderBtnTitle: "Limit Order",
+            limitOrderBtnTitle: "Limit order",
             sendZshBtnTitle: "Send ZSH",
             priceFieldLabel: "Price",
             amountFieldLabel: "Amount",
             totalPriceFieldLabel: "Total",
-            authErrorLogin: "Log In",
+            authErrorLogin: "Log in",
             authErrorOr: "or",
             authErrorRegister: "Sign up",
             recipientFieldLabel: "Recipient",
